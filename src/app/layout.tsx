@@ -10,16 +10,17 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.kyzel.dev'),
+  metadataBase: new URL('https://kyzel.dev'),
   title: 'Tuong Luu',
   description: 'Tuong Luu Portfolio',
   openGraph: {
     title: 'Tuong Luu',
     description: 'Tuong Luu Portfolio',
-    url: new URL('https://www.kyzel.dev'),
+    siteName: 'Tuong Luu',
+    url: new URL('https://kyzel.dev'),
     images: [
       {
-        url: '/opengraph-image.png',
+        url: '/api/og',
         width: 512,
         height: 512,
         alt: 'Tuong Luu',
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    images: '/opengraph-image.png',
+    images: '/api/og',
   },
 
   icons: {
