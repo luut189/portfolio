@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://wwww.kyzel.dev'),
+  metadataBase: new URL('https://www.kyzel.dev'),
   title: 'Tuong Luu',
   description: 'Tuong Luu Portfolio',
   openGraph: {
