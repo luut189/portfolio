@@ -16,11 +16,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Tuong Luu',
     description: 'Tuong Luu Portfolio',
+    url: new URL('https://www.kyzel.dev'),
     images: [
       {
         url: '/opengraph-image.png',
-        width: 800,
-        height: 600,
+        width: 512,
+        height: 512,
         alt: 'Tuong Luu',
       },
     ],
