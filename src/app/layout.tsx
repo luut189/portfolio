@@ -18,17 +18,17 @@ export const metadata: Metadata = {
     description: 'Tuong Luu Portfolio',
     images: [
       {
-        url: '/favicon.ico',
+        url: '/opengraph-image.png',
         width: 800,
         height: 600,
-        alt: 'Your Website Open Graph Image',
+        alt: 'Tuong Luu',
       },
     ],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    images: '/favicon.ico', // Relative to metadataBase
+    images: '/opengraph-image.png',
   },
 
   icons: {
