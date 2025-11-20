@@ -15,7 +15,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
       <div className='relative flex min-h-screen'>
         <div className='pointer-events-none absolute inset-0 bg-[radial-gradient(var(--primary)_1px,transparent_1px)] bg-size-[16px_16px] opacity-10' />
-        <div className='relative mx-auto flex w-full flex-col gap-2 lg:w-1/2'>
+        <div className='relative mx-auto flex w-full flex-col gap-2 lg:w-2/3 xl:w-1/2'>
           <Navbar />
           <motion.div
             key={pathname}

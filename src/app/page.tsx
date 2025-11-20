@@ -1,4 +1,4 @@
-import SpotifyRecentlyPlayed from '@/components/spotify';
+import SpotifyWidget from '@/components/spotify';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import Image from 'next/image';
@@ -83,15 +83,7 @@ export default function Homepage() {
         </div>
       </section>
       <section>
-        <div className='flex items-center justify-center gap-2'>
-          <Avatar className='h-8 w-8'>
-            <AvatarImage src='https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png' />
-            <AvatarFallback>Spotify</AvatarFallback>
-          </Avatar>
-          <span className='text-xl font-semibold whitespace-nowrap'>Recently Played</span>
-          <div className='bg-primary h-0.5 flex-1' />
-        </div>
-        <SpotifyRecentlyPlayed />
+        <SpotifyWidget />
       </section>
     </div>
   );

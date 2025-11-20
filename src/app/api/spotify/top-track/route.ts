@@ -11,23 +11,20 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to refresh token' }, { status: 500 });
     }
 
-    const response = await fetch('https://api.spotify.com/v1/me/player/recently-played?limit=5', {
+    const response = await fetch('https://api.spotify.com/v1/me/top/tracks?limit=5', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (!response.ok) {
-      return NextResponse.json(
-        { error: 'Failed to fetch recently played' },
-        { status: response.status },
-      );
+      return NextResponse.json({ error: 'Failed to fetch top track' }, { status: response.status });
     }
 
     const data = await response.json();
 
     const mapped = data.items.map((item: any) => ({
-      id: item.track.id,
+      id: item.id,
     }));
 
     const uniqueItems = Array.from(new Map(mapped.map((item: any) => [item.id, item])).values());
@@ -38,7 +35,7 @@ export async function GET() {
   } catch (err) {
     return NextResponse.json(
       {
-        error: 'Failed to fetch recently played',
+        error: 'Failed to fetch top track',
         details: String(err),
       },
       { status: 500 },
