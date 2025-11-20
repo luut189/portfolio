@@ -1,7 +1,5 @@
 'use client';
 
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -34,8 +32,6 @@ export default function Providers({ children }: { children: ReactNode }) {
         </div>
       </div>
       <Toaster richColors />
-      <SpeedInsights />
-      <Analytics />
     </ThemeProvider>
   );
 }

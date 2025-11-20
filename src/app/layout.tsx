@@ -1,5 +1,7 @@
 import Providers from '@/components/providers';
 
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter } from 'next/font/google';
 
 import type { Metadata } from 'next';
@@ -56,6 +58,8 @@ export default function RootLayout({
       <body
         className={`${inter.variable} selection:bg-primary selection:text-background antialiased`}>
         <Providers>{children}</Providers>
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
