@@ -17,17 +17,19 @@ export default function SpotifyWidget() {
   return (
     <>
       <Tabs defaultValue='recent'>
-        <div className='flex w-full items-center justify-center gap-2'>
-          <Avatar className='h-8 w-8'>
-            <AvatarImage src='https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png' />
-            <AvatarFallback>Spotify</AvatarFallback>
-          </Avatar>
-          <div className='text-xl font-semibold whitespace-nowrap'>
-            <TabsContent value='recent'>Just Played</TabsContent>
-            <TabsContent value='top'>#1 Track this Month</TabsContent>
+        <div className='flex w-full flex-col items-center justify-center gap-2 md:flex-row'>
+          <div className='flex w-full items-center justify-center gap-2'>
+            <Avatar className='h-8 w-8'>
+              <AvatarImage src='https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png' />
+              <AvatarFallback>Spotify</AvatarFallback>
+            </Avatar>
+            <div className='text-xl font-semibold whitespace-nowrap'>
+              <TabsContent value='recent'>Just Played</TabsContent>
+              <TabsContent value='top'>#1 Track this Month</TabsContent>
+            </div>
+            <div className='bg-primary h-0.5 flex-1' />
           </div>
-          <div className='bg-primary h-0.5 flex-1' />
-          <TabsList className='flex items-center justify-center gap-2 bg-transparent'>
+          <TabsList className='ml-auto flex items-center justify-center gap-2 bg-transparent'>
             <TabsTrigger
               value='recent'
               className='dark:hover:text-accent-foreground hover:text-accent-foreground hover:bg-accent dark:data-[state=active]:bg-accent/60 cursor-pointer border-none'>
