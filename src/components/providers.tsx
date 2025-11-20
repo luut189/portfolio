@@ -5,6 +5,8 @@ import { ThemeProvider } from './theme/theme-provider';
 import Navbar from './navbar';
 import { motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import Contacts from './contacts';
+import { Toaster } from './ui/sonner';
 
 export default function Providers({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -22,11 +24,13 @@ export default function Providers({ children }: { children: ReactNode }) {
             className='flex w-full flex-1 items-center justify-center lg:mx-auto'>
             {children}
           </motion.div>
-          <footer className='text-muted-foreground mt-6 mb-2 text-center text-xs'>
-            &copy; {new Date().getFullYear()} Tuong Luu. All rights reserved
+          <footer className='text-muted-foreground mx-4 mt-6 mb-2 flex flex-col gap-2 text-center text-xs'>
+            <Contacts />
+            <p>&copy; {new Date().getFullYear()} Tuong Luu. All rights reserved</p>
           </footer>
         </div>
       </div>
+      <Toaster richColors />
     </ThemeProvider>
   );
 }

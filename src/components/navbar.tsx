@@ -5,19 +5,22 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Menu } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 const routes = [
   { display: 'about', href: '/' },
   { display: 'projects', href: '/projects' },
   { display: 'resume', href: '/resume' },
+  { display: 'contact', href: '/contact' },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   return (
     <nav className='my-4 flex items-center justify-between rounded-xl px-6 py-4'>
       <Link href='/' className='text-xl font-semibold'>
@@ -26,7 +29,11 @@ export default function Navbar() {
       <div className='flex items-center justify-center gap-2'>
         <div className='hidden lg:flex'>
           {routes.map((route) => (
-            <Button key={route.href} variant={'link'} className='text-lg font-semibold' asChild>
+            <Button
+              key={route.href}
+              variant={'ghost'}
+              className={cn('text-lg', { underline: pathname === route.href })}
+              asChild>
               <Link href={route.href}>{route.display}</Link>
             </Button>
           ))}
@@ -43,7 +50,9 @@ export default function Navbar() {
             {routes.map((route) => (
               <DropdownMenuItem
                 key={route.href}
-                className='font-medium underline underline-offset-2'
+                className={cn('font-medium underline-offset-2', {
+                  underline: pathname === route.href,
+                })}
                 asChild>
                 <Link href={route.href}>{route.display}</Link>
               </DropdownMenuItem>
