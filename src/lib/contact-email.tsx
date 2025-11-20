@@ -19,16 +19,19 @@ export const ContactEmail = ({
 }: ContactEmailProps) => (
   <Html>
     <Head>
+      {/*  eslint-disable-next-line @next/next/no-page-custom-font */}
       <link
         href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap'
         rel='stylesheet'
       />
     </Head>
-    <Preview>New message from your website</Preview>
+    <Preview>You&apos;ve received a new message from your website</Preview>
 
     <Body style={styles.body}>
       <Container style={styles.container}>
         <Section style={styles.header}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src='https://www.kyzel.dev/icon.png' alt='Logo' style={styles.logo} />
           <Text style={styles.title}>New Contact Form Message</Text>
         </Section>
 
@@ -66,6 +69,11 @@ const styles = {
     backgroundColor: '#0f0f0f',
     padding: '20px 0',
     margin: 0,
+  },
+  logo: {
+    width: '50px',
+    height: '50px',
+    marginBottom: '12px',
   },
   container: {
     maxWidth: '600px',

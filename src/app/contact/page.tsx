@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle, RefreshCw } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -46,7 +47,10 @@ export default function ContactPage() {
       if (!res.ok) throw new Error();
 
       toast.success('Email sent successfully!');
+
+      form.reset();
     } catch (err) {
+      console.error(err);
       toast.error('Something went wrong. Try again.', {
         action: {
           label: 'Retry',
@@ -67,16 +71,20 @@ export default function ContactPage() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='bg-background mx-auto mt-4 w-full max-w-lg space-y-6 rounded-md border p-4'>
+          className='mx-auto mt-4 w-full space-y-6 rounded-md p-4'>
           <div className='flex w-full items-center justify-between gap-2'>
             <FormField
               control={form.control}
               name='name'
               render={({ field }) => (
-                <FormItem className='flex-1'>
+                <FormItem className='w-1/3'>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder='John Doe' {...field} />
+                    <Input
+                      placeholder='John Doe'
+                      {...field}
+                      className='border-primary rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -87,10 +95,14 @@ export default function ContactPage() {
               control={form.control}
               name='email'
               render={({ field }) => (
-                <FormItem className='flex-1'>
+                <FormItem className='w-2/3'>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder='john@example.com' {...field} />
+                    <Input
+                      placeholder='john@example.com'
+                      {...field}
+                      className='border-primary rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -105,7 +117,11 @@ export default function ContactPage() {
               <FormItem>
                 <FormLabel>Subject</FormLabel>
                 <FormControl>
-                  <Input placeholder='Subject' {...field} />
+                  <Input
+                    placeholder='Subject of your message'
+                    {...field}
+                    className='border-primary rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -119,7 +135,11 @@ export default function ContactPage() {
               <FormItem>
                 <FormLabel>Message</FormLabel>
                 <FormControl>
-                  <Textarea placeholder='Your message...' {...field} className='min-h-[120px]' />
+                  <Textarea
+                    placeholder='Your message...'
+                    {...field}
+                    className='border-primary min-h-[120px] rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -142,7 +162,7 @@ export default function ContactPage() {
         </form>
       </Form>
       <p className='text-muted-foreground p-2 text-center text-sm'>
-        This contact form will send an email to tm2luu@uwaterloo.ca
+        This contact form will send an email to me.
       </p>
     </div>
   );

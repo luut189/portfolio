@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og';
+import Image from 'next/image';
 
 export const runtime = 'edge';
 
@@ -14,7 +15,7 @@ export const GET = async () => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <img src='https://kyzel.dev/icon.png' width={128} height={128} />
+        <Image src='https://kyzel.dev/icon.png' alt='Tuong Luu' width={128} height={128} />
       </div>
     ),
     { width: 1200, height: 630 },

@@ -1,8 +1,10 @@
 import ContactEmail from '@/lib/contact-email';
+
 import { render } from '@react-email/components';
 import { NextRequest, NextResponse } from 'next/server';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const RESEND_RECEIVER = process.env.RESEND_RECEIVER ?? 'delivered@resend.dev';
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         from: 'info@mail.kyzel.dev',
-        to: ['tuong.luu@uwaterloo.ca'],
+        to: [RESEND_RECEIVER],
         subject,
         html,
       }),

@@ -1,15 +1,18 @@
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+'use client';
+
 import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Menu } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+
+import { Menu } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const routes = [
   { display: 'about', href: '/' },
@@ -24,7 +27,7 @@ export default function Navbar() {
   return (
     <nav className='my-4 flex items-center justify-between rounded-xl px-6 py-4'>
       <Link href='/' className='text-xl font-semibold'>
-        kyzel's
+        kyzel&apos;s
       </Link>
       <div className='flex items-center justify-center gap-2'>
         <div className='hidden lg:flex'>
