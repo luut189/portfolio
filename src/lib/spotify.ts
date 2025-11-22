@@ -16,4 +16,3 @@ export async function getSpotifyToken(): Promise<string> {
 
   return access_token;
 }
-
