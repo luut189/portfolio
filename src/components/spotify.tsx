@@ -77,7 +77,7 @@ function TrackDisplay({ apiUrl }: TrackDisplayProps) {
 
   if (!tracks) {
     return (
-      <div className='flex h-96 w-full items-center justify-center p-4'>
+      <div className='flex h-[464px] w-full items-center justify-center p-4 md:h-96'>
         <LoaderCircle className='h-10 w-10 animate-spin' />
       </div>
     );
@@ -86,44 +86,55 @@ function TrackDisplay({ apiUrl }: TrackDisplayProps) {
   const allLoaded = loadedCount >= tracks.length;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: allLoaded ? 1 : 0 }}
-      transition={{ duration: 0.45, ease: 'easeOut' }}
-      className='flex w-full items-center justify-center gap-2 p-4'>
-      <iframe
-        onLoad={() => setLoadedCount((c) => c + 1)}
-        className='hidden w-1/2 rounded-xl md:flex'
-        src={`https://open.spotify.com/embed/track/${tracks[0].id}?utm_source=generator`}
-        width='100%'
-        height={352}
-        allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
-        loading='lazy'
-      />
-
-      <div className='flex flex-1 flex-col items-center justify-center gap-2'>
-        {tracks.map((track, i) => (
-          <motion.iframe
-            key={track.id}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{
-              opacity: allLoaded ? 1 : 0,
-              y: allLoaded ? 0 : 15,
-            }}
-            transition={{
-              duration: 0.5,
-              delay: allLoaded ? 0.1 + i * 0.1 : 0,
-            }}
-            onLoad={() => setLoadedCount((c) => c + 1)}
-            className={cn('rounded-xl', { 'block md:hidden': i === 0 })}
-            src={`https://open.spotify.com/embed/track/${track.id}?utm_source=generator`}
-            width='100%'
-            height={80}
-            allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
-            loading='lazy'
-          />
-        ))}
+    <>
+      <div
+        className={cn('flex h-[464px] w-full items-center justify-center p-4 md:h-96', {
+          hidden: allLoaded,
+        })}>
+        <LoaderCircle className='h-10 w-10 animate-spin' />
       </div>
-    </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: allLoaded ? 1 : 0 }}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className={cn('flex w-full items-center justify-center gap-2 p-4', {
+          'pointer-events-none absolute h-0 w-0 opacity-100': !allLoaded,
+        })}>
+        <iframe
+          onLoad={() => setLoadedCount((c) => c + 1)}
+          className='hidden w-1/2 rounded-xl md:flex'
+          src={`https://open.spotify.com/embed/track/${tracks[0].id}?utm_source=generator`}
+          width='100%'
+          height={352}
+          allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
+          loading='lazy'
+        />
+
+        <div className='flex flex-1 flex-col items-center justify-center gap-2'>
+          {tracks.slice(0, 5).map((track, i) => (
+            <motion.iframe
+              key={`${track.id}-${i}`}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{
+                opacity: allLoaded ? 1 : 0,
+                y: allLoaded ? 0 : 15,
+              }}
+              transition={{
+                duration: 0.5,
+                delay: allLoaded ? 0.1 + i * 0.1 : 0,
+              }}
+              onLoad={() => setLoadedCount((c) => c + 1)}
+              className={cn('rounded-xl', { 'block md:hidden': i === 0 })}
+              src={`https://open.spotify.com/embed/track/${track.id}?utm_source=generator`}
+              width='100%'
+              height={80}
+              allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
+              loading='lazy'
+            />
+          ))}
+        </div>
+      </motion.div>
+    </>
   );
 }

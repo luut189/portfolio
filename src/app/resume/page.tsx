@@ -10,16 +10,18 @@ export default function ResumePage() {
         <File />
         <span className='text-xl font-semibold whitespace-nowrap'>Resume</span>
         <div className='bg-primary h-0.5 flex-1' />
-        <Button variant={'outline'} title='Download resume' asChild>
+        <Button variant={'outline'} size={'icon'} title='Download resume' asChild>
           <Link href='/api/resume' download='TuongLuuResume.pdf'>
             <ArrowDownToLine />
           </Link>
         </Button>
       </div>
-      <iframe
-        className='h-screen w-full rounded-lg'
-        src='https://luut189.github.io/latex-repo/resume.pdf#toolbar=0'
-      />
+      <div className='bg-accent w-full rounded-lg p-2'>
+        <iframe
+          className='h-[70dvh] w-full'
+          src='https://luut189.github.io/latex-repo/resume.pdf#toolbar=0'
+        />
+      </div>
     </div>
   );
 }

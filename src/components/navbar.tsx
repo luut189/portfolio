@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
@@ -35,9 +36,14 @@ export default function Navbar() {
             <Button
               key={route.href}
               variant={'ghost'}
-              className={cn('text-lg', { underline: pathname === route.href })}
+              className={cn('text-lg hover:bg-transparent dark:hover:bg-transparent', {
+                'underline underline-offset-4': pathname === route.href,
+              })}
               asChild>
-              <Link href={route.href}>{route.display}</Link>
+              <Link href={route.href} className='group relative inline-block'>
+                <span>{route.display}</span>
+                <span className='absolute bottom-1.5 mx-auto h-px w-0 bg-current transition-all duration-300 group-hover:w-3/4' />
+              </Link>
             </Button>
           ))}
           <ThemeToggle />
@@ -50,6 +56,7 @@ export default function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className='mr-5 flex flex-col items-end border-none p-2'>
             <ThemeToggle />
+            <DropdownMenuSeparator className='w-full' />
             {routes.map((route) => (
               <DropdownMenuItem
                 key={route.href}

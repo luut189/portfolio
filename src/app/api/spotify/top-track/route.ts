@@ -23,14 +23,10 @@ export async function GET() {
 
     const data = await response.json();
 
-    const mapped = data.items.map((item: any) => ({
-      id: item.id,
-    }));
-
-    const uniqueItems = Array.from(new Map(mapped.map((item: any) => [item.id, item])).values());
-
     return NextResponse.json({
-      items: uniqueItems,
+      items: data.items.map((item: any) => ({
+        id: item.id,
+      })),
     });
   } catch (err) {
     return NextResponse.json(

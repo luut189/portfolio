@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to refresh token' }, { status: 500 });
     }
 
-    const response = await fetch('https://api.spotify.com/v1/me/player/recently-played?limit=5', {
+    const response = await fetch('https://api.spotify.com/v1/me/player/recently-played?limit=20', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -33,7 +33,7 @@ export async function GET() {
     const uniqueItems = Array.from(new Map(mapped.map((item: any) => [item.id, item])).values());
 
     return NextResponse.json({
-      items: uniqueItems,
+      items: uniqueItems.slice(0, 5),
     });
   } catch (err) {
     return NextResponse.json(
