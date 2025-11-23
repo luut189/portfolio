@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Inter } from 'next/font/google';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
 
@@ -13,6 +13,18 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  viewportFit: 'cover',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  colorScheme: 'dark light',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://kyzel.dev'),

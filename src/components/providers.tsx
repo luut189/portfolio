@@ -15,7 +15,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
       <div className='relative flex min-h-screen'>
         <div className='pointer-events-none absolute inset-0 bg-[radial-gradient(var(--primary)_1px,transparent_1px)] bg-size-[16px_16px] opacity-10' />
-        <div className='relative mx-auto flex w-full flex-col gap-2 lg:w-2/3 xl:w-1/2'>
+        <main className='relative mx-auto flex w-full flex-col gap-2 lg:w-2/3 xl:w-1/2'>
           <Navbar />
           <motion.div
             key={pathname}
@@ -25,11 +25,11 @@ export default function Providers({ children }: { children: ReactNode }) {
             className='flex w-full flex-1 items-center justify-center lg:mx-auto'>
             {children}
           </motion.div>
-          <footer className='text-muted-foreground mx-4 mt-6 mb-2 flex flex-col gap-2 text-center text-xs'>
+          <footer className='text-muted-foreground m-4 mt-6 flex flex-col gap-2 text-center text-xs'>
             <Contacts />
-            <p>&copy; {new Date().getFullYear()} Tuong Luu. All rights reserved</p>
+            <p className='m-2'>&copy; {new Date().getFullYear()} Tuong Luu. All rights reserved</p>
           </footer>
-        </div>
+        </main>
       </div>
       <Toaster richColors />
     </ThemeProvider>

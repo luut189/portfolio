@@ -42,7 +42,7 @@ export default function Navbar() {
               asChild>
               <Link href={route.href} className='group relative inline-block'>
                 <span>{route.display}</span>
-                <span className='absolute bottom-1.5 mx-auto h-px w-0 bg-current transition-all duration-300 group-hover:w-3/4' />
+                <span className='absolute bottom-1.5 mx-auto h-px w-0 bg-current transition-normal duration-300 group-hover:w-3/4' />
               </Link>
             </Button>
           ))}

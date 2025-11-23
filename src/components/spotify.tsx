@@ -108,11 +108,10 @@ function TrackDisplay({ apiUrl }: TrackDisplayProps) {
           width='100%'
           height={352}
           allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
-          loading='lazy'
         />
 
         <div className='flex flex-1 flex-col items-center justify-center gap-2'>
-          {tracks.slice(0, 5).map((track, i) => (
+          {tracks.map((track, i) => (
             <motion.iframe
               key={`${track.id}-${i}`}
               initial={{ opacity: 0, y: 15 }}
@@ -130,7 +129,6 @@ function TrackDisplay({ apiUrl }: TrackDisplayProps) {
               width='100%'
               height={80}
               allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
-              loading='lazy'
             />
           ))}
         </div>
