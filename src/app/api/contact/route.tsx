@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'kyzel.dev <info@mail.kyzel.dev>',
+        from: 'Kyzel.dev <noreply@anidis.moe>',
         to: [RESEND_RECEIVER],
         subject,
         html,
