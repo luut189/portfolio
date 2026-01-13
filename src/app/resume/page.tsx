@@ -19,7 +19,7 @@ export default function ResumePage() {
       <div className='bg-accent w-full rounded-lg p-2'>
         <iframe
           className='h-[70dvh] w-full'
-          src='https://luut189.github.io/latex-repo/resume.pdf#toolbar=0'
+          src='https://luut189.github.io/resume-repo/resume.pdf#toolbar=0'
         />
       </div>
     </div>
