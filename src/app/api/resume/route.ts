@@ -1,6 +1,6 @@
 export async function GET() {
   const response = await fetch(
-    'https://raw.githubusercontent.com/luut189/latex-repo/gh-pages/resume.pdf',
+    'https://raw.githubusercontent.com/luut189/resume-repo/gh-pages/resume.pdf',
   );
   const buffer = await response.arrayBuffer();
 
