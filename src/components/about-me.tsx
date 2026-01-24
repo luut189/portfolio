@@ -35,11 +35,13 @@ const experiences = [
     company: 'Lynkr',
     url: 'https://lynkr.ca',
     logo: '/lynkr.png',
-    brief: 'built FastAPI + Next.js services, CI/CD, and AI agent tooling.',
+    brief: 'built FastAPI + Next.js with AI orchestration.',
     tasks: [
-      'built core features for Lynkr Workbench contributing to $100k+ revenue',
-      'developed FastAPI + Next.js stack with Docker and AI agent pipeline',
-      'set up CI/CD with GitHub Actions and Google Cloud Secret Manager',
+      'shipped FastAPI + Next.js app with AI agents, driving $100k+ CAD revenue and 500+ beta users',
+      'migrated DB seeder into a Kubernetes job on GKE, cutting deploy time by 40%',
+      'architected multi-org tenancy with tenant isolation and RBAC',
+      'built MFA with TOTP + Twilio and JWT session controls, cutting unauthorized access by 70%',
+      'delivered audit logging for user actions, admin changes, and security events',
     ],
   },
   {
@@ -49,11 +51,11 @@ const experiences = [
     company: 'WE Accelerate',
     url: 'https://uwaterloo.ca',
     logo: '/uwaterloo.svg',
-    brief: 'led a team building an AI fraud-prevention concept',
+    brief: 'designed AI fraud prevention for elders.',
     tasks: [
-      'led a 5-person team building an AI solution for elder fraud prevention',
-      'created project planning tool and workflow pipeline',
-      'coordinated deliverables with mentor using Visio diagrams',
+      'led a 5-person team to design an AI solution for elder fraud prevention',
+      'built a project planning tool and pipeline wireframe to align deliverables',
+      'worked with a mentor to refine goals and validate real-world AI constraints',
     ],
   },
 ];
