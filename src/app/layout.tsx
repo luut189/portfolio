@@ -2,7 +2,7 @@ import Providers from '@/components/providers';
 
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Inter } from 'next/font/google';
+import { Caveat, Inter } from 'next/font/google';
 
 import type { Metadata, Viewport } from 'next';
 
@@ -10,6 +10,12 @@ import './globals.css';
 
 const inter = Inter({
   variable: '--font-inter',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const caveat = Caveat({
+  variable: '--font-caveat',
   subsets: ['latin'],
   display: 'swap',
 });
@@ -68,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${inter.variable} selection:bg-primary selection:text-background antialiased`}>
+        className={`${inter.variable} ${caveat.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
         <Providers>{children}</Providers>
         <SpeedInsights />
         <Analytics />

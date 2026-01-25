@@ -1,8 +1,10 @@
 export type Project = {
   slug: string;
   name: string;
+  featured: boolean;
   tagline: string;
   repoUrl: string;
+  liveUrl?: string;
   stack: string[];
   highlights: string[];
   images?: Array<{
@@ -15,8 +17,10 @@ export const projects: Project[] = [
   {
     slug: 'anidis',
     name: 'AniDis',
+    featured: true,
     tagline: 'Anime Discussion Platform',
     repoUrl: 'https://github.com/luut189/anime-discuss',
+    liveUrl: 'https://anidis.moe',
     stack: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'Docker'],
     highlights: [
       'Built a MERN-based anime discussion platform with real-time updates for 1,000+ titles and threaded comments with unlimited nesting.',
@@ -34,9 +38,10 @@ export const projects: Project[] = [
   {
     slug: 'kyzen',
     name: 'Kyzen',
+    featured: false,
     tagline: '2D Game Engine',
     repoUrl: 'https://github.com/luut189/kyzen',
-    stack: ['Java', 'LWJGL', 'Maven', 'OpenGL'],
+    stack: ['Java', 'Maven', 'OpenGL'],
     highlights: [
       'Built a 2D game engine with batch rendering, improving performance by up to 60% when handling 1,000+ objects per frame.',
       'Applied OOP principles and patterns (Builder, Singleton) to keep systems modular and maintainable.',

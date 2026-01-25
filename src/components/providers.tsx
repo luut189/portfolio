@@ -25,7 +25,7 @@ export default function Providers({ children }: { children: ReactNode }) {
             className='flex w-full flex-1 items-center justify-center lg:mx-auto'>
             {children}
           </motion.div>
-          <footer className='text-muted-foreground m-4 mt-6 flex flex-col gap-2 text-center text-xs'>
+          <footer className='text-muted-foreground mb-2 flex flex-col gap-2 text-center text-xs'>
             <Contacts />
             <p className='m-2'>&copy; {new Date().getFullYear()} Tuong Luu. All rights reserved</p>
           </footer>
