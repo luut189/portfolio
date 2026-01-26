@@ -156,7 +156,7 @@ export function CommandPalette({
             <Terminal size={64} className='h-5 w-5' /> Command Palette
           </DialogTitle>
         </DialogHeader>
-        <div className='flex gap-2 max-h-130'>
+        <div className='flex max-h-130 gap-2'>
           <Command
             value={activeId}
             onValueChange={handleValueChange}
@@ -283,7 +283,7 @@ export function CommandPalette({
           </Command>
 
           {selected ? (
-            <div className='bg-background hidden w-115 min-h-100 rounded-md border p-4 shadow lg:block'>
+            <div className='bg-background hidden min-h-100 w-115 rounded-md border p-4 shadow lg:block'>
               {selected.type === 'preview' ? (
                 <div>
                   <div className='text-sm font-semibold'>
