@@ -1,0 +1,48 @@
+export const experiences = [
+  {
+    from: 'Sep 2023',
+    to: 'Aug 2028',
+    title: 'Computational Mathematics',
+    company: 'UWaterloo',
+    url: 'https://uwaterloo.ca',
+    logo: '/uwaterloo.svg',
+    brief: 'studying cs and suffering with math',
+    tasks: [
+      'studied computer architecture concepts including processors, memory, I/O, and performance',
+      'learned design and implementation of core data structures such as lists, trees, sets, and maps',
+      'gained experience in object-oriented programming and building medium-sized software systems',
+      'developed skills in algorithm design, sorting, recursion, and data abstraction',
+      'practiced Linux command-line workflows, version control, scripting, debugging, and automated testing',
+    ],
+  },
+  {
+    from: 'Sep 2025',
+    to: 'Dec 2025',
+    title: 'Software Developer Intern',
+    company: 'Lynkr',
+    url: 'https://lynkr.ca',
+    logo: '/lynkr.png',
+    brief: 'built FastAPI + Next.js with AI orchestration.',
+    tasks: [
+      'shipped FastAPI + Next.js app with AI agents, driving $100k+ CAD revenue and 500+ beta users',
+      'migrated DB seeder into a Kubernetes job on GKE, cutting deploy time by 40%',
+      'architected multi-org tenancy with tenant isolation and RBAC',
+      'built MFA with TOTP + Twilio and JWT session controls, cutting unauthorized access by 70%',
+      'delivered audit logging for user actions, admin changes, and security events',
+    ],
+  },
+  {
+    from: 'Jan 2025',
+    to: 'Apr 2025',
+    title: 'Team Member',
+    company: 'WE Accelerate',
+    url: 'https://uwaterloo.ca',
+    logo: '/uwaterloo.svg',
+    brief: 'designed AI fraud prevention for elders.',
+    tasks: [
+      'led a 5-person team to design an AI solution for elder fraud prevention',
+      'built a project planning tool and pipeline wireframe to align deliverables',
+      'worked with a mentor to refine goals and validate real-world AI constraints',
+    ],
+  },
+];

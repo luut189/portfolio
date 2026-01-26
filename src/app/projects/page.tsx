@@ -5,22 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { GitHub } from '@/components/ui/icons';
 import { projects } from '@/lib/projects';
+import { getCookie, setCookie } from '@/lib/utils';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-
-function getCookie(name: string) {
-  if (typeof document === 'undefined') return null;
-  return document.cookie
-    .split('; ')
-    .find((row) => row.startsWith(name + '='))
-    ?.split('=')[1];
-}
-
-function setCookie(name: string, value: string, days = 30) {
-  document.cookie = `${name}=${value}; path=/; max-age=${days * 86400}`;
-}
 
 const HINT_SEEN_COOKIE = 'live_hint_seen';
 

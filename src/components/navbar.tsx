@@ -15,6 +15,8 @@ import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { CommandPaletteButton } from './command-palette';
+
 const routes = [
   { display: 'about', href: '/' },
   { display: 'projects', href: '/projects' },
@@ -31,18 +33,19 @@ export default function Navbar() {
         kyzel&apos;s
       </Link>
       <div className='flex items-center justify-center gap-2'>
+        <CommandPaletteButton />
         <div className='hidden lg:flex'>
           {routes.map((route) => (
             <Button
               key={route.href}
               variant={'ghost'}
-              className={cn('text-lg hover:bg-transparent dark:hover:bg-transparent', {
+              className={cn('px-2 text-lg hover:bg-transparent dark:hover:bg-transparent', {
                 'underline underline-offset-4': pathname === route.href,
               })}
               asChild>
               <Link href={route.href} className='group relative inline-block'>
                 <span>{route.display}</span>
-                <span className='absolute bottom-[7px] mx-auto h-px w-0 bg-current transition-normal duration-300 group-hover:w-3/4' />
+                <span className='absolute bottom-1.75 mx-auto h-px w-0 bg-current transition-normal duration-300 group-hover:w-3/4' />
               </Link>
             </Button>
           ))}
