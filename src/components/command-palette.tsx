@@ -85,7 +85,7 @@ export function CommandPalette({
 
   const run = useCallback(
     (item: Item) => {
-      if (item.type === 'route') {
+      if (item.type === 'route' || item.type === 'preview') {
         router.push(item.href);
       } else if (item.type === 'action') {
         item.action();

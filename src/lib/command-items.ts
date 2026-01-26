@@ -21,7 +21,7 @@ export type CommandItem =
         body: string;
         bullets?: string[];
       };
-      href?: string;
+      href: string;
     }
   | {
       type: 'action';
