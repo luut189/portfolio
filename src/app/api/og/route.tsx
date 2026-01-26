@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from '@vercel/og';
-import Image from 'next/image';
 
 export const runtime = 'edge';
 
@@ -14,7 +14,7 @@ export const GET = async () => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <Image src='https://kyzel.dev/icon.png' alt='Tuong Luu' width={128} height={128} />
+      <img src='https://kyzel.dev/icon.png' alt='Tuong Luu' width={512} height={512} />
     </div>,
     { width: 1200, height: 630 },
   );
