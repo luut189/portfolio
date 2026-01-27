@@ -161,7 +161,7 @@ export function CommandPalette({
             value={activeId}
             onValueChange={handleValueChange}
             shouldFilter={false}
-            className='w-md shadow'>
+            className='shadow md:w-md'>
             <CommandInput
               placeholder='Search pages, projects, experience...'
               value={query}

@@ -138,7 +138,7 @@ export default function ContactPage() {
                   <Textarea
                     placeholder='Your message...'
                     {...field}
-                    className='border-primary min-h-[120px] rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                    className='border-primary min-h-30 rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
                   />
                 </FormControl>
                 <FormMessage />
