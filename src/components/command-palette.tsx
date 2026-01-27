@@ -14,7 +14,7 @@ import { useCommandPalette } from '@/context/command-palette-context';
 import { COMMAND_ITEMS, type CommandItem as Item } from '@/lib/command-items';
 
 import fuzzysort from 'fuzzysort';
-import { Terminal } from 'lucide-react';
+import { Search, Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
@@ -259,7 +259,7 @@ export function CommandPalette({
                     ))}
                   </CommandGroup>
                 </>
-              ) : (
+              ) : filtered.length > 0 ? (
                 <CommandGroup heading='Search results'>
                   {filtered.map((item) => (
                     <CommandItem
@@ -278,7 +278,7 @@ export function CommandPalette({
                     </CommandItem>
                   ))}
                 </CommandGroup>
-              )}
+              ) : null}
             </CommandList>
           </Command>
 
@@ -323,10 +323,14 @@ export function CommandPaletteButton() {
 
   return (
     <Button variant={'outline'} onClick={open} className='flex items-center justify-between px-2'>
+      <div className='mr-4 flex items-center justify-center gap-2'>
+        <Search />
+        <p className='text-muted-foreground text-xs'>Search...</p>
+      </div>
       <div className='space-x-0.5 text-xs'>
-        <kbd className='rounded border px-1.5 py-0.5'>{isMac ? '⌘' : 'Ctrl'}</kbd>
+        <kbd className='bg-accent rounded border px-1.5 py-0.5'>{isMac ? '⌘' : 'Ctrl'}</kbd>
         <span>+</span>
-        <kbd className='rounded border px-1.5 py-0.5'>K</kbd>
+        <kbd className='bg-accent rounded border px-1.5 py-0.5'>K</kbd>
       </div>
     </Button>
   );
