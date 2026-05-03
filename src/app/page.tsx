@@ -1,5 +1,3 @@
-'use client';
-
 import AboutMe from '@/components/about-me';
 import SpotifyWidget from '@/components/spotify';
 

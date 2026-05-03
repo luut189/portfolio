@@ -68,8 +68,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   <Image
                     src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${techStr}/${techStr}-original.svg`}
                     alt=''
-                    width={256}
-                    height={256}
+                    width={24}
+                    height={24}
+                    sizes='24px'
                     className='h-6 w-6 rounded'
                   />
                   {tech}
