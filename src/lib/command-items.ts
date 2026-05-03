@@ -1,5 +1,5 @@
-import { experiences } from '@/lib/experiences';
 import { projects } from '@/lib/projects';
+import { education, experiences } from '@/lib/timelines';
 
 export type CommandItem =
   | {
@@ -95,7 +95,35 @@ const experienceItems: CommandItem[] = experiences.map((e, idx) => {
       'experience',
       'work',
       'intern',
+    ],
+    preview: {
+      heading,
+      body,
+      bullets: e.tasks,
+    },
+  };
+});
+
+const educationItems: CommandItem[] = education.map((e, idx) => {
+  const heading = `${e.title} • ${e.company}`;
+  const body = `${e.brief ? `${e.brief}` : ''} • ${e.from} - ${e.to}`;
+
+  return {
+    type: 'preview',
+    id: `edu:${idx}:${e.company}:${e.title}`,
+    title: () => `${e.title} @ ${e.company}`,
+    subtitle: `${e.from} - ${e.to}`,
+    href: '/',
+    keywords: () => [
+      e.title,
+      e.company,
+      e.from,
+      e.to,
+      ...(e.tasks ?? []).flatMap((t) => t.split(/\W+/).filter(Boolean)),
       'education',
+      'school',
+      'university',
+      'degree',
     ],
     preview: {
       heading,
@@ -120,5 +148,6 @@ export const COMMAND_ITEMS = {
   pages: PAGES,
   projects: projectItems,
   experience: experienceItems,
+  education: educationItems,
   actions: actionItems,
 };

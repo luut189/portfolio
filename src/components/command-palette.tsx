@@ -17,22 +17,9 @@ import fuzzysort from 'fuzzysort';
 import { Search, Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
 
 import { Button } from './ui/button';
-
-function useCommandK(onToggle: () => void) {
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        onToggle();
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [onToggle]);
-}
 
 function getSearchText(item: Item): string {
   const parts = [item.title(), item.subtitle ?? '', ...(item.keywords ? item.keywords() : [])];
@@ -81,8 +68,6 @@ export function CommandPalette({
     }, 100);
   };
 
-  useCommandK(() => handleOpenChange(!open));
-
   const run = useCallback(
     (item: Item) => {
       if (item.type === 'route' || item.type === 'preview') {
@@ -101,6 +86,7 @@ export function CommandPalette({
       pages: COMMAND_ITEMS.pages,
       projects: COMMAND_ITEMS.projects,
       experience: COMMAND_ITEMS.experience,
+      education: COMMAND_ITEMS.education,
       actions: [...COMMAND_ITEMS.actions, themeItem],
     }),
     [themeItem],
@@ -111,6 +97,7 @@ export function CommandPalette({
       ...all.pages,
       ...all.projects,
       ...all.experience,
+      ...all.education,
       ...[...COMMAND_ITEMS.actions, themeItem],
     ];
     return new Map(flat.map((it) => [it.id, it]));
@@ -130,6 +117,7 @@ export function CommandPalette({
       ...all.pages,
       ...all.projects,
       ...all.experience,
+      ...all.education,
       ...[...COMMAND_ITEMS.actions, themeItem],
     ],
     [all, themeItem],
@@ -163,7 +151,7 @@ export function CommandPalette({
             shouldFilter={false}
             className='shadow md:w-md'>
             <CommandInput
-              placeholder='Search pages, projects, experience...'
+              placeholder='Search pages, projects, experience, education...'
               value={query}
               onValueChange={setQuery}
             />
@@ -217,6 +205,27 @@ export function CommandPalette({
 
                   <CommandGroup heading='Experience'>
                     {all.experience.map((item) => (
+                      <CommandItem
+                        key={item.id}
+                        value={item.id}
+                        onSelect={() => run(item)}
+                        onMouseEnter={() => setActiveId(item.id)}>
+                        <div className='flex w-full items-center justify-between gap-3'>
+                          <div>
+                            <div className='text-sm font-medium'>{item.title()}</div>
+                            {item.subtitle ? (
+                              <div className='text-muted-foreground text-xs'>{item.subtitle}</div>
+                            ) : null}
+                          </div>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+
+                  <CommandSeparator />
+
+                  <CommandGroup heading='Education'>
+                    {all.education.map((item) => (
                       <CommandItem
                         key={item.id}
                         value={item.id}
@@ -318,11 +327,16 @@ export function CommandPalette({
 }
 
 export function CommandPaletteButton() {
-  const { open } = useCommandPalette();
-  const isMac = /Macintosh|Mac OS X/.test(navigator.userAgent);
+  const { open, warmup } = useCommandPalette();
+  const isMac = typeof navigator !== 'undefined' && /Macintosh|Mac OS X/.test(navigator.userAgent);
 
   return (
-    <Button variant={'outline'} onClick={open} className='flex items-center justify-between px-2'>
+    <Button
+      variant={'outline'}
+      onClick={open}
+      onMouseEnter={warmup}
+      onFocus={warmup}
+      className='flex items-center justify-between px-2'>
       <div className='mr-4 flex items-center justify-center gap-2'>
         <Search />
         <p className='text-muted-foreground text-xs'>Search...</p>
