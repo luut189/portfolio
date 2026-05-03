@@ -1,4 +1,16 @@
-import { Html, Head, Preview, Body, Container, Section, Text } from '@react-email/components';
+import {
+  Body,
+  Container,
+  Font,
+  Head,
+  Html,
+  Img,
+  Preview,
+  Section,
+  Tailwind,
+  Text,
+  pixelBasedPreset,
+} from '@react-email/components';
 
 interface ContactEmailProps {
   name: string;
@@ -9,6 +21,26 @@ interface ContactEmailProps {
   ip: string;
 }
 
+const tailwindConfig = {
+  presets: [pixelBasedPreset],
+  theme: {
+    extend: {
+      colors: {
+        background: '#0f0f0f',
+        surface: '#181818',
+        border: '#222222',
+        muted: '#d4d4d4',
+        subtle: '#7d7d7d',
+        strong: '#ffffff',
+        label: '#e5e5e5',
+      },
+      fontFamily: {
+        sans: ['IBM Plex Sans', 'Helvetica', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+
 export const ContactEmail = ({
   name,
   email,
@@ -17,108 +49,83 @@ export const ContactEmail = ({
   timestamp,
   ip,
 }: ContactEmailProps) => (
-  <Html>
+  <Html lang='en'>
     <Head>
-      {/*  eslint-disable-next-line @next/next/no-page-custom-font */}
-      <link
-        href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap'
-        rel='stylesheet'
+      <Font
+        fontFamily='IBM Plex Sans'
+        fallbackFontFamily={['Helvetica', 'Arial', 'sans-serif']}
+        webFont={{
+          url: 'https://fonts.gstatic.com/s/ibmplexsans/v23/zYXGKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1swZSAXcomDVmadSD6llzAA.ttf',
+          format: 'truetype',
+        }}
+        fontWeight={400}
+        fontStyle='normal'
+      />
+      <Font
+        fontFamily='IBM Plex Sans'
+        fallbackFontFamily={['Helvetica', 'Arial', 'sans-serif']}
+        webFont={{
+          url: 'https://fonts.gstatic.com/s/ibmplexsans/v23/zYXGKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1swZSAXcomDVmadSD2FlzAA.ttf',
+          format: 'truetype',
+        }}
+        fontWeight={500}
+        fontStyle='normal'
+      />
+      <Font
+        fontFamily='IBM Plex Sans'
+        fallbackFontFamily={['Helvetica', 'Arial', 'sans-serif']}
+        webFont={{
+          url: 'https://fonts.gstatic.com/s/ibmplexsans/v23/zYXGKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1swZSAXcomDVmadSDNF5zAA.ttf',
+          format: 'truetype',
+        }}
+        fontWeight={600}
+        fontStyle='normal'
       />
     </Head>
     <Preview>You&apos;ve received a new message from your website</Preview>
+    <Tailwind config={tailwindConfig}>
+      <Body className='bg-background m-0 px-0 py-5 font-sans'>
+        <Container className='border-border bg-surface mx-auto max-w-150 rounded-[10px] border px-6 py-6 shadow-none'>
+          <Section className='mb-5'>
+            <Img
+              src='https://www.kyzel.dev/icon.png'
+              alt='Logo'
+              width='50'
+              height='50'
+              className='mb-3'
+            />
+            <Text className='text-strong m-0 text-[20px] leading-7 font-semibold'>
+              New Contact Form Message
+            </Text>
+          </Section>
 
-    <Body style={styles.body}>
-      <Container style={styles.container}>
-        <Section style={styles.header}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src='https://www.kyzel.dev/icon.png' alt='Logo' style={styles.logo} />
-          <Text style={styles.title}>New Contact Form Message</Text>
-        </Section>
+          <Section className='mb-4'>
+            <Text className='text-label m-0 mb-1.5 text-[14px] leading-5.5'>
+              Name: <span className='text-strong'>{name}</span>
+            </Text>
+            <Text className='text-label m-0 mb-1.5 text-[14px] leading-5.5'>
+              Email: <span className='text-strong'>{email}</span>
+            </Text>
+            <Text className='text-label m-0 text-[14px] leading-5.5'>
+              Subject: <span className='text-strong'>{subject}</span>
+            </Text>
+          </Section>
 
-        <Section style={styles.section}>
-          <Text style={styles.label}>
-            Name: <span style={styles.value}>{name}</span>
-          </Text>
-          <Text style={styles.label}>
-            Email: <span style={styles.value}>{email}</span>
-          </Text>
-          <Text style={styles.label}>
-            Subject: <span style={styles.value}>{subject}</span>
-          </Text>
-        </Section>
+          <Section className='mb-4'>
+            <Text className='text-label m-0 mb-1.5 text-[14px] leading-5.5'>Message:</Text>
+            <Text className='text-muted m-0 text-[14px] leading-5.5 whitespace-pre-wrap'>
+              {message}
+            </Text>
+          </Section>
 
-        <Section style={styles.section}>
-          <Text style={styles.label}>Message:</Text>
-          <Text style={styles.message}>{message}</Text>
-        </Section>
-
-        <Section style={styles.footer}>
-          <Text>Date: {timestamp}</Text>
-          <Text>IP Address: {ip}</Text>
-        </Section>
-      </Container>
-    </Body>
+          <Section className='border-border mt-6 border-t border-solid pt-3'>
+            <Text className='text-subtle m-0 mb-1 text-[12px] leading-4.5'>Date: {timestamp}</Text>
+            <Text className='text-subtle m-0 text-[12px] leading-4.5'>IP Address: {ip}</Text>
+          </Section>
+        </Container>
+      </Body>
+    </Tailwind>
   </Html>
 );
 
 export default ContactEmail;
-
-const styles = {
-  body: {
-    fontFamily: "'Inter', Helvetica, Arial, sans-serif",
-    backgroundColor: '#0f0f0f',
-    padding: '20px 0',
-    margin: 0,
-  },
-  logo: {
-    width: '50px',
-    height: '50px',
-    marginBottom: '12px',
-  },
-  container: {
-    maxWidth: '600px',
-    margin: '0 auto',
-    backgroundColor: '#181818',
-    padding: '24px',
-    borderRadius: '10px',
-    border: '1px solid #222',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.4)',
-  },
-  header: {
-    marginBottom: '20px',
-  },
-  title: {
-    color: '#ffffff',
-    fontSize: '20px',
-    fontWeight: '600',
-    margin: 0,
-  },
-  section: {
-    marginBottom: '16px',
-  },
-  label: {
-    color: '#e5e5e5',
-    margin: '0 0 6px 0',
-    fontSize: '14px',
-  },
-  value: {
-    color: '#ffffff',
-  },
-  link: {
-    color: '#60a5fa',
-    textDecoration: 'underline',
-  },
-  message: {
-    whiteSpace: 'pre-wrap',
-    lineHeight: '1.5',
-    color: '#d4d4d4',
-    fontSize: '14px',
-  },
-  footer: {
-    marginTop: '24px',
-    borderTop: '1px solid #2a2a2a',
-    paddingTop: '12px',
-    fontSize: '12px',
-    color: '#7d7d7d',
-  },
-} as const;

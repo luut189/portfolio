@@ -1,6 +1,6 @@
 import ContactEmail from '@/lib/contact-email';
 
-import { render } from '@react-email/components';
+import { render as renderEmail } from '@react-email/render';
 import { NextRequest, NextResponse } from 'next/server';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const forwardedFor = req.headers.get('x-forwarded-for');
     const ip = forwardedFor?.split(',')[0]?.trim() ?? 'unknown';
 
-    const html = await render(
+    const html = await renderEmail(
       <ContactEmail
         name={name}
         email={email}
