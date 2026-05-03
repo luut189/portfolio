@@ -2,16 +2,17 @@ import Providers from '@/components/providers';
 
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Caveat, Inter } from 'next/font/google';
+import { Bricolage_Grotesque, Caveat } from 'next/font/google';
 
 import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
 
-const inter = Inter({
-  variable: '--font-inter',
+const ibmPlexSans = Bricolage_Grotesque({
+  variable: '--font-sans-main',
   subsets: ['latin'],
   display: 'swap',
+  weight: ['400', '500', '600'],
 });
 
 const caveat = Caveat({
@@ -74,7 +75,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${caveat.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
+        className={`${ibmPlexSans.variable} ${caveat.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
         <Providers>{children}</Providers>
         <SpeedInsights />
         <Analytics />
