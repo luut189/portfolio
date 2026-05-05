@@ -1,12 +1,4 @@
-'use client';
-
-import { cn } from '@/lib/utils';
-
-import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
-
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import Image from 'next/image';
 
 import type { SpotifyTrack } from '@/lib/spotify';
 
@@ -16,109 +8,130 @@ interface SpotifyClientProps {
 }
 
 export default function SpotifyClient({ recentTracks, topTracks }: SpotifyClientProps) {
-  return (
-    <>
-      <Tabs defaultValue='recent'>
-        <div className='flex w-full flex-col items-center justify-center gap-2 md:flex-row'>
-          <div className='flex w-full items-center justify-center gap-2'>
-            <Avatar className='h-8 w-8'>
-              <AvatarImage src='https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green.png' />
-              <AvatarFallback>Spotify</AvatarFallback>
-            </Avatar>
-            <div className='text-xl font-semibold whitespace-nowrap'>
-              <TabsContent value='recent'>Just Played</TabsContent>
-              <TabsContent value='top'>#1 Track this Month</TabsContent>
-            </div>
-            <div className='bg-primary h-0.5 flex-1' />
-          </div>
-          <TabsList className='ml-auto flex items-center justify-center gap-2 bg-transparent'>
-            <TabsTrigger
-              value='recent'
-              className='dark:hover:text-accent-foreground hover:text-accent-foreground hover:bg-accent dark:data-[state=active]:bg-accent/60 cursor-pointer border-none'>
-              Recently Played
-            </TabsTrigger>
-            <TabsTrigger
-              value='top'
-              className='dark:hover:text-accent-foreground hover:text-accent-foreground hover:bg-accent dark:data-[state=active]:bg-accent/60 cursor-pointer border-none'>
-              Top Tracks
-            </TabsTrigger>
-          </TabsList>
-        </div>
-        <TabsContent value='recent'>
-          <TrackDisplay tracks={recentTracks} />
-        </TabsContent>
-        <TabsContent value='top'>
-          <TrackDisplay tracks={topTracks} />
-        </TabsContent>
-      </Tabs>
+  const featuredTrack = recentTracks[0] ?? topTracks[0] ?? null;
+  const recentList = recentTracks.filter((track) => track.id !== featuredTrack?.id).slice(0, 3);
+  const repeatTrack =
+    topTracks.find((track) => track.id !== featuredTrack?.id) ?? topTracks[0] ?? null;
 
-      <p className='text-muted-foreground px-4 text-right text-sm'>
+  return (
+    <section className='flex flex-col gap-4 p-4 pt-2'>
+      <div className='flex items-center justify-between gap-3'>
+        <h2 className='text-muted-foreground text-base font-medium'>Listening</h2>
+        {featuredTrack ? (
+          <a
+            href={featuredTrack.externalUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='text-muted-foreground hover:text-foreground text-sm underline underline-offset-4'>
+            open in spotify
+          </a>
+        ) : null}
+      </div>
+
+      {!featuredTrack ? (
+        <p className='text-muted-foreground text-sm'>Spotify data is unavailable right now.</p>
+      ) : (
+        <>
+          <div
+            className='grid gap-4 md:grid-cols-2 md:gap-6'
+            style={{
+              gridTemplateColumns: repeatTrack ? undefined : 'minmax(0, 1fr)',
+            }}>
+            <FeaturedTrack label='just played' track={featuredTrack} />
+
+            {repeatTrack ? (
+              <FeaturedTrack label='on repeat this month' track={repeatTrack} />
+            ) : null}
+          </div>
+
+          <div className='flex flex-col gap-1 pt-1'>
+            {recentList.length ? (
+              <>
+                <p className='text-muted-foreground text-sm'>recently played</p>
+                <ol className='flex flex-col'>
+                  {recentList.map((track, index) => (
+                    <li
+                      key={track.id}
+                      className='border-border grid grid-cols-[auto_auto_1fr] items-center gap-3 border-b py-2 last:border-b-0'>
+                      <span className='text-muted-foreground text-xs tabular-nums'>
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <a
+                        href={track.externalUrl}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='relative block h-10 w-10 overflow-hidden rounded-md'>
+                        <TrackPoster track={track} size='40px' />
+                      </a>
+                      <div className='min-w-0'>
+                        <a
+                          href={track.externalUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='block truncate font-medium underline-offset-4 hover:underline'>
+                          {track.name}
+                        </a>
+                        <p className='text-muted-foreground truncate text-sm'>
+                          {formatArtists(track)}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            ) : null}
+          </div>
+        </>
+      )}
+
+      <p className='font-handwritten text-muted-foreground text-right text-lg'>
         yes, i like j-pop, how did you know?
       </p>
-    </>
+    </section>
   );
 }
 
-function TrackDisplay({ tracks }: { tracks: SpotifyTrack[] }) {
-  const [loadedCount, setLoadedCount] = useState(0);
+function formatArtists(track: SpotifyTrack) {
+  return track.artists.map((artist) => artist.name).join(', ');
+}
 
-  if (!tracks.length) {
-    return (
-      <div className='flex h-[464px] w-full items-center justify-center p-4 md:h-96'>
-        <p className='text-muted-foreground text-sm'>Spotify data is unavailable right now.</p>
+function FeaturedTrack({ label, track }: { label: string; track: SpotifyTrack }) {
+  return (
+    <div className='flex items-start gap-4'>
+      <a
+        href={track.externalUrl}
+        target='_blank'
+        rel='noopener noreferrer'
+        className='relative block h-20 w-20 shrink-0 overflow-hidden rounded-lg'>
+        <TrackPoster track={track} size='80px' />
+      </a>
+      <div className='flex flex-col gap-1 pt-1'>
+        <p className='text-muted-foreground text-sm'>{label}</p>
+        <a
+          href={track.externalUrl}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='w-fit text-xl font-semibold underline-offset-4 hover:underline'>
+          {track.name}
+        </a>
+        <p className='text-muted-foreground text-sm sm:text-base'>{formatArtists(track)}</p>
       </div>
-    );
+    </div>
+  );
+}
+
+function TrackPoster({ track, size }: { track: SpotifyTrack; size: string }) {
+  if (!track.albumArtUrl) {
+    return <div className='bg-muted h-full w-full' />;
   }
 
-  const allLoaded = loadedCount >= tracks.length;
-
   return (
-    <>
-      <div
-        className={cn('flex h-[464px] w-full items-center justify-center p-4 md:h-96', {
-          hidden: allLoaded,
-        })}>
-        <LoaderCircle className='h-10 w-10 animate-spin' />
-      </div>
-
-      <div
-        className={cn(
-          'flex w-full items-center justify-center gap-2 p-4 transition-opacity duration-300',
-          {
-            'pointer-events-none absolute h-0 w-0 opacity-0': !allLoaded,
-            'opacity-100': allLoaded,
-          },
-        )}>
-        <iframe
-          onLoad={() => setLoadedCount((current) => current + 1)}
-          className='hidden w-1/2 rounded-xl transition-opacity duration-300 md:flex'
-          src={`https://open.spotify.com/embed/track/${tracks[0].id}?utm_source=generator`}
-          width='100%'
-          height={352}
-          allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
-        />
-
-        <div className='flex flex-1 flex-col items-center justify-center gap-2'>
-          {tracks.map((track, index) => (
-            <iframe
-              key={`${track.id}-${index}`}
-              onLoad={() => setLoadedCount((current) => current + 1)}
-              style={{
-                transitionDelay: allLoaded ? `${100 + index * 100}ms` : '0ms',
-              }}
-              className={cn('rounded-xl transition-[opacity,transform] duration-500 ease-out', {
-                'translate-y-0 opacity-100': allLoaded,
-                'translate-y-[15px] opacity-0': !allLoaded,
-                'block md:hidden': index === 0,
-              })}
-              src={`https://open.spotify.com/embed/track/${track.id}?utm_source=generator`}
-              width='100%'
-              height={80}
-              allow='autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture'
-            />
-          ))}
-        </div>
-      </div>
-    </>
+    <Image
+      src={track.albumArtUrl}
+      alt={`Album art for ${track.name}`}
+      fill
+      sizes={size}
+      className='object-cover'
+    />
   );
 }

@@ -52,7 +52,7 @@ export default function ProjectLiveLink({ href, projectName, featured }: Project
           onClick={handleClick}
           aria-label={`Open ${projectName}`}>
           <div className='inline-block animate-pulse rounded-full bg-emerald-400 p-1 shadow-[0_0_8px_2px_rgba(34,197,94,0.8)]' />
-          <span className='animate-pulse text-xs font-medium text-emerald-500'>Live</span>
+          <span className='live-text-breathe text-xs font-medium text-emerald-500'>Live</span>
         </Link>
       </Button>
     </div>

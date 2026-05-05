@@ -9,28 +9,31 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { education, experiences, TimelineEntry } from '@/lib/timelines';
 
-import { Diamond } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function AboutMe() {
   return (
     <>
-      <div className='flex items-center justify-center gap-2'>
-        <Avatar className='h-8 w-8'>
-          <AvatarImage src='https://github.com/luut189.png' />
-          <AvatarFallback>KZ</AvatarFallback>
-        </Avatar>
-        <span className='text-xl font-semibold whitespace-nowrap'>Tuong Luu</span>
-        <div className='bg-primary h-0.5 flex-1' />
-      </div>
       <div className='flex flex-col gap-2 p-4'>
+        <header className='flex flex-col gap-3 pb-2'>
+          <div className='flex items-center gap-3'>
+            <Avatar className='h-10 w-10'>
+              <AvatarImage src='https://github.com/luut189.png' alt='Portrait of Tuong Luu' />
+              <AvatarFallback>KZ</AvatarFallback>
+            </Avatar>
+            <h1 className='text-2xl font-semibold whitespace-nowrap'>Tuong Luu</h1>
+          </div>
+          <p className='text-muted-foreground max-w-[52ch] text-sm leading-6 sm:text-base'>
+            Computational mathematics student at UWaterloo, building thoughtful full-stack
+            software.
+          </p>
+        </header>
+
+        <p className='text-muted-foreground px-2 pt-2 text-base font-medium'>Experience</p>
         <TimelineSection items={experiences} />
-        <div className='mx-auto flex w-2/3 items-center justify-center gap-3'>
-          <div className='bg-primary h-0.5 flex-1' />
-          <Diamond />
-          <div className='bg-primary h-0.5 flex-1' />
-        </div>
+
+        <p className='text-muted-foreground px-2 pt-2 text-base font-medium'>Education</p>
         <TimelineSection items={education} />
       </div>
     </>

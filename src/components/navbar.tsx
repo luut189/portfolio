@@ -18,7 +18,6 @@ import { usePathname } from 'next/navigation';
 import { CommandPaletteButton } from './command-palette';
 
 const routes = [
-  { display: 'about', href: '/' },
   { display: 'projects', href: '/projects' },
   { display: 'resume', href: '/resume' },
   { display: 'contact', href: '/contact' },
@@ -39,13 +38,21 @@ export default function Navbar() {
             <Button
               key={route.href}
               variant={'ghost'}
-              className={cn('px-2 text-lg hover:bg-transparent dark:hover:bg-transparent', {
-                'underline underline-offset-4': pathname === route.href,
-              })}
+              className='px-2 text-lg hover:bg-transparent dark:hover:bg-transparent'
               asChild>
-              <Link href={route.href} className='group relative inline-block'>
+              <Link
+                href={route.href}
+                className='group relative inline-block'
+                aria-current={pathname === route.href ? 'page' : undefined}>
                 <span>{route.display}</span>
-                <span className='absolute bottom-1.75 mx-auto h-px w-0 bg-current transition-normal duration-300 group-hover:w-3/4' />
+                <span
+                  className={cn(
+                    'absolute bottom-1.75 left-1/2 h-px w-0 -translate-x-1/2 bg-current transition-normal duration-300 group-hover:w-3/4',
+                    {
+                      'w-3/4': pathname === route.href,
+                    },
+                  )}
+                />
               </Link>
             </Button>
           ))}

@@ -29,7 +29,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <ArrowLeft className='h-4 w-4' />
           </Link>
         </Button>
-        <span className='text-xl font-semibold whitespace-nowrap'>{project.name}</span>
+        <h1 className='text-xl font-semibold whitespace-nowrap'>{project.name}</h1>
         <div className='bg-primary h-0.5 flex-1' />
         {project.liveUrl && (
           <Button variant='secondary' asChild>
@@ -39,7 +39,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               rel='noopener noreferrer'
               aria-label={`Open ${project.name}`}>
               <div className='inline-block animate-pulse rounded-full bg-emerald-400 p-1 shadow-[0_0_8px_2px_rgba(34,197,94,0.8)]' />
-              <span className='text-xs font-medium text-emerald-500'>Live</span>
+              <span className='live-text-breathe text-xs font-medium text-emerald-500'>
+                Live
+              </span>
             </Link>
           </Button>
         )}

@@ -11,7 +11,7 @@ export default function ProjectsPage() {
   return (
     <div className='mx-4 flex w-full flex-1 flex-col gap-4'>
       <div className='flex items-center justify-center gap-2'>
-        <span className='text-xl font-semibold whitespace-nowrap'>Projects</span>
+        <h1 className='text-xl font-semibold whitespace-nowrap'>Projects</h1>
         <div className='bg-primary h-0.5 flex-1' />
       </div>
       <div className='grid gap-4 md:grid-cols-2'>
