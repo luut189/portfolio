@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 const loadCommandPalette = () => import('@/components/command-palette');
 
@@ -23,7 +23,9 @@ const CommandPaletteContext = createContext<CommandPaletteContextType | null>(nu
 export function CommandPaletteProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const warmup = useMemo(() => () => void loadCommandPalette(), []);
+  const warmup = useCallback(() => {
+    void loadCommandPalette();
+  }, []);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {

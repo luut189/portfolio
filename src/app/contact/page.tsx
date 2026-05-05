@@ -1,5 +1,6 @@
 'use client';
 
+import { submitContactAction } from '@/app/contact/actions';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -11,6 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { contactFormSchema } from '@/lib/contact';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle, RefreshCw } from 'lucide-react';
@@ -18,16 +20,9 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-const formSchema = z.object({
-  name: z.string().min(2, { error: 'Name must be at least 2 characters' }),
-  email: z.email({ error: 'Please enter a valid email address' }),
-  subject: z.string().min(1, { error: 'Subject cannot be empty' }),
-  message: z.string().min(1, { error: 'Message cannot be empty' }),
-});
-
 export default function ContactPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof contactFormSchema>>({
+    resolver: zodResolver(contactFormSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -36,22 +31,20 @@ export default function ContactPage() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof contactFormSchema>) => {
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      });
+      const result = await submitContactAction(values);
 
-      if (!res.ok) throw new Error();
+      if (!result.success) {
+        throw new Error(result.error);
+      }
 
       toast.success('Email sent successfully!');
 
       form.reset();
     } catch (err) {
       console.error(err);
-      toast.error('Something went wrong. Try again.', {
+      toast.error(err instanceof Error ? err.message : 'Something went wrong. Try again.', {
         action: {
           label: 'Retry',
           onClick: () => {
@@ -65,19 +58,19 @@ export default function ContactPage() {
   return (
     <div className='mx-4 w-full'>
       <div className='flex items-center justify-center gap-2'>
-        <span className='text-2xl font-semibold whitespace-nowrap'>Contact Me</span>
+        <h1 className='text-2xl font-semibold whitespace-nowrap'>Contact Me</h1>
         <div className='bg-primary h-0.5 flex-1' />
       </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className='mx-auto mt-4 w-full space-y-6 rounded-md p-4'>
-          <div className='flex w-full items-center justify-between gap-2'>
+          <div className='flex w-full flex-col items-stretch gap-6 md:flex-row md:items-start md:gap-4'>
             <FormField
               control={form.control}
               name='name'
               render={({ field }) => (
-                <FormItem className='w-1/3'>
+                <FormItem className='w-full md:w-1/3'>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
@@ -95,7 +88,7 @@ export default function ContactPage() {
               control={form.control}
               name='email'
               render={({ field }) => (
-                <FormItem className='w-2/3'>
+                <FormItem className='w-full md:w-2/3'>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
@@ -155,6 +148,7 @@ export default function ContactPage() {
               size={'icon'}
               type='button'
               onClick={() => form.reset()}
+              aria-label='Reset contact form'
               className='cursor-pointer'>
               <RefreshCw />
             </Button>

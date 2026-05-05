@@ -1,56 +1,23 @@
-import ContactEmail from '@/lib/contact-email';
+import { contactFormSchema, sendContactEmail } from '@/lib/contact';
 
-import { render as renderEmail } from '@react-email/render';
 import { NextRequest, NextResponse } from 'next/server';
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const RESEND_RECEIVER = process.env.RESEND_RECEIVER ?? 'delivered@resend.dev';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, subject, message } = await req.json();
+    const body = await req.json();
+    const parsed = contactFormSchema.safeParse(body);
 
-    if (!name || !email || !subject || !message) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? 'Invalid request body' },
+        { status: 400 },
+      );
     }
 
-    const timestamp = new Date().toLocaleString('en-US', {
-      dateStyle: 'long',
-      timeStyle: 'short',
-    });
     const forwardedFor = req.headers.get('x-forwarded-for');
     const ip = forwardedFor?.split(',')[0]?.trim() ?? 'unknown';
 
-    const html = await renderEmail(
-      <ContactEmail
-        name={name}
-        email={email}
-        subject={subject}
-        message={message}
-        timestamp={timestamp}
-        ip={ip}
-      />,
-    );
-
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: 'Kyzel.dev <noreply@anidis.moe>',
-        to: [RESEND_RECEIVER],
-        subject,
-        html,
-      }),
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      console.error('Resend API error:', error);
-      return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
-    }
+    await sendContactEmail(parsed.data, { ip });
 
     return NextResponse.json({ success: true });
   } catch (e) {

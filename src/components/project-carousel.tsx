@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 type ProjectImage = {
   src: string;
@@ -16,19 +16,15 @@ type ProjectCarouselProps = {
   images?: ProjectImage[];
 };
 
+const FALLBACK_IMAGES: ProjectImage[] = [
+  {
+    src: '',
+    alt: 'Project image placeholder',
+  },
+];
+
 export default function ProjectCarousel({ images = [] }: ProjectCarouselProps) {
-  const normalizedImages = useMemo(
-    () =>
-      images.length
-        ? images
-        : [
-            {
-              src: '',
-              alt: 'Project image placeholder',
-            },
-          ],
-    [images],
-  );
+  const normalizedImages = images.length ? images : FALLBACK_IMAGES;
   const [index, setIndex] = useState(0);
   const total = normalizedImages.length;
 
@@ -84,11 +80,14 @@ export default function ProjectCarousel({ images = [] }: ProjectCarouselProps) {
               key={`${image.alt}-${imageIndex}`}
               type='button'
               onClick={() => setIndex(imageIndex)}
-              className={cn('bg-muted-foreground/40 h-2 w-2 rounded-full', {
-                'bg-primary': imageIndex === index,
-              })}
-              aria-label={`Go to image ${imageIndex + 1}`}
-            />
+              className='flex h-11 w-11 items-center justify-center rounded-full'
+              aria-label={`Go to image ${imageIndex + 1}`}>
+              <span
+                className={cn('bg-muted-foreground/40 h-2.5 w-2.5 rounded-full', {
+                  'bg-primary': imageIndex === index,
+                })}
+              />
+            </button>
           ))}
         </div>
       )}

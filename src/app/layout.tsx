@@ -25,11 +25,10 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
   colorScheme: 'dark light',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: 'oklch(1 0 0)' },
+    { media: '(prefers-color-scheme: dark)', color: 'oklch(0.145 0 0)' },
   ],
 };
 
