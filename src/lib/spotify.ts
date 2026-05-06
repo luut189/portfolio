@@ -1,5 +1,3 @@
-import { cache } from 'react';
-
 export interface SpotifyTrack {
   id: string;
   name: string;
@@ -10,10 +8,10 @@ export interface SpotifyTrack {
   externalUrl: string;
 }
 
-const SPOTIFY_REVALIDATE_SECONDS = 300;
+const SPOTIFY_TOP_TRACKS_REVALIDATE_SECONDS = 300;
 const SPOTIFY_RESULT_LIMIT = 5;
 
-const getSpotifyToken = cache(async (): Promise<string | null> => {
+async function getSpotifyToken(): Promise<string | null> {
   const refreshToken = process.env.SPOTIFY_REFRESH_TOKEN;
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -41,9 +39,15 @@ const getSpotifyToken = cache(async (): Promise<string | null> => {
 
   const data = (await tokenRes.json()) as { access_token?: string };
   return data.access_token ?? null;
-});
+}
 
-async function fetchSpotify<T>(url: string): Promise<T> {
+async function fetchSpotify<T>(
+  url: string,
+  options?: {
+    cache?: RequestCache;
+    revalidate?: number;
+  },
+): Promise<T> {
   const token = await getSpotifyToken();
 
   if (!token) {
@@ -54,9 +58,14 @@ async function fetchSpotify<T>(url: string): Promise<T> {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    next: {
-      revalidate: SPOTIFY_REVALIDATE_SECONDS,
-    },
+    ...(options?.cache ? { cache: options.cache } : {}),
+    ...(typeof options?.revalidate === 'number'
+      ? {
+          next: {
+            revalidate: options.revalidate,
+          },
+        }
+      : {}),
   });
 
   if (!response.ok) {
@@ -85,7 +94,9 @@ export async function getRecentlyPlayedTracks(): Promise<SpotifyTrack[]> {
         };
       };
     }>;
-  }>('https://api.spotify.com/v1/me/player/recently-played?limit=20');
+  }>('https://api.spotify.com/v1/me/player/recently-played?limit=20', {
+    cache: 'no-store',
+  });
 
   const uniqueTracks = Array.from(
     new Map(
@@ -122,7 +133,9 @@ export async function getTopTracks(): Promise<SpotifyTrack[]> {
         spotify: string;
       };
     }>;
-  }>('https://api.spotify.com/v1/me/top/tracks?limit=5');
+  }>('https://api.spotify.com/v1/me/top/tracks?limit=5', {
+    revalidate: SPOTIFY_TOP_TRACKS_REVALIDATE_SECONDS,
+  });
 
   return data.items.slice(0, SPOTIFY_RESULT_LIMIT).map((track) => ({
     id: track.id,
