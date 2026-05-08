@@ -2,7 +2,7 @@ import Providers from '@/components/providers';
 
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Bricolage_Grotesque, Caveat } from 'next/font/google';
+import { Bricolage_Grotesque, Reenie_Beanie } from 'next/font/google';
 
 import type { Metadata, Viewport } from 'next';
 
@@ -15,10 +15,11 @@ const bricolageGrotesque = Bricolage_Grotesque({
   weight: ['400', '500', '600'],
 });
 
-const caveat = Caveat({
-  variable: '--font-caveat',
+const reenieBeanie = Reenie_Beanie({
+  variable: '--font-reenie',
   subsets: ['latin'],
   display: 'swap',
+  weight: '400',
 });
 
 export const viewport: Viewport = {
@@ -74,7 +75,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${bricolageGrotesque.variable} ${caveat.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
+        className={`${bricolageGrotesque.variable} ${reenieBeanie.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
         <Providers>{children}</Providers>
         <SpeedInsights />
         <Analytics />
