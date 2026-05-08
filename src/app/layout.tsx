@@ -8,7 +8,7 @@ import type { Metadata, Viewport } from 'next';
 
 import './globals.css';
 
-const ibmPlexSans = Bricolage_Grotesque({
+const bricolageGrotesque = Bricolage_Grotesque({
   variable: '--font-sans-main',
   subsets: ['latin'],
   display: 'swap',
@@ -74,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${ibmPlexSans.variable} ${caveat.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
+        className={`${bricolageGrotesque.variable} ${caveat.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
         <Providers>{children}</Providers>
         <SpeedInsights />
         <Analytics />
