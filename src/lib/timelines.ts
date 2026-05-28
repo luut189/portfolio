@@ -17,7 +17,7 @@ export const experiences: TimelineEntry[] = [
     company: 'Carta',
     url: 'https://carta.com/',
     logo: '/carta.png',
-    brief: 'incoming summer 2026',
+    brief: 'data ecosystem team',
     tasks: ['to be added'],
   },
   {
