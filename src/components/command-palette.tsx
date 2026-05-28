@@ -7,29 +7,123 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '@/components/ui/command';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useCommandPalette } from '@/context/command-palette-context';
 import { COMMAND_ITEMS, type CommandItem as Item } from '@/lib/command-items';
 
 import fuzzysort from 'fuzzysort';
-import { Search, Terminal } from 'lucide-react';
+import { ArrowRight, CornerDownLeft, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
 
 import { Button } from './ui/button';
 
+type CommandSection = {
+  heading: string;
+  label: string;
+  items: Item[];
+};
+
 function getSearchText(item: Item): string {
   const parts = [item.title(), item.subtitle ?? '', ...(item.keywords ? item.keywords() : [])];
 
   if (item.type === 'preview') {
     parts.push(item.preview.heading ?? '');
+    parts.push(item.preview.body);
     parts.push(...(item.preview.bullets ?? []));
   }
 
   return parts.filter(Boolean).join(' ');
+}
+
+function getActionText(item: Item): string {
+  if (item.type === 'action') return 'Run';
+  return 'Open';
+}
+
+function CommandRow({
+  item,
+  label,
+  onRun,
+  onActive,
+}: {
+  item: Item;
+  label: string;
+  onRun: (item: Item) => void;
+  onActive: (id: string) => void;
+}) {
+  return (
+    <CommandItem
+      value={item.id}
+      onSelect={() => onRun(item)}
+      onMouseEnter={() => onActive(item.id)}
+      className='group data-[selected=true]:bg-primary/10 data-[selected=true]:text-foreground data-[selected=true]:ring-primary/15 mx-1 rounded-lg px-3 py-2.5 data-[selected=true]:ring-1'>
+      <div className='grid min-w-0 flex-1 gap-1'>
+        <div className='flex min-w-0 items-center gap-2'>
+          <span className='truncate text-sm font-medium'>{item.title()}</span>
+          <span className='bg-accent text-muted-foreground group-data-[selected=true]:bg-background/70 group-data-[selected=true]:text-foreground/70 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium'>
+            {label}
+          </span>
+        </div>
+        {item.subtitle ? (
+          <p className='text-muted-foreground group-data-[selected=true]:text-foreground/70 truncate text-xs'>
+            {item.subtitle}
+          </p>
+        ) : null}
+      </div>
+      <ArrowRight className='text-muted-foreground group-data-[selected=true]:text-foreground/80 ml-2 h-4 w-4 opacity-0 transition-opacity group-data-[selected=true]:opacity-100' />
+    </CommandItem>
+  );
+}
+
+function SelectedPreview({ item, label }: { item: Item; label: string }) {
+  const heading = item.type === 'preview' ? (item.preview.heading ?? item.title()) : item.title();
+  const body = item.type === 'preview' ? item.preview.body : item.subtitle;
+  const bullets = item.type === 'preview' ? item.preview.bullets?.slice(0, 4) : undefined;
+
+  return (
+    <aside className='bg-card hidden h-full min-h-0 border-l lg:flex lg:w-88 lg:flex-col'>
+      <div className='command-palette-scroll min-h-0 flex-1 overflow-y-auto p-5'>
+        <div className='space-y-3'>
+          <div className='flex items-center justify-between gap-3'>
+            <span className='bg-accent text-muted-foreground rounded px-2 py-1 text-xs font-medium'>
+              {label}
+            </span>
+            <span className='text-muted-foreground text-xs'>{getActionText(item)}</span>
+          </div>
+
+          <div className='space-y-2'>
+            <h2 className='text-lg leading-snug font-semibold'>{heading}</h2>
+            {body ? <p className='text-muted-foreground text-sm leading-6'>{body}</p> : null}
+          </div>
+        </div>
+
+        {bullets?.length ? (
+          <ul className='mt-5 space-y-3 text-sm leading-6'>
+            {bullets.map((bullet) => (
+              <li key={bullet} className='flex gap-3'>
+                <span className='bg-primary mt-2 h-1.5 w-1.5 shrink-0 rounded-full' />
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+
+      <div className='text-muted-foreground flex h-10 shrink-0 items-center border-t px-5 text-xs'>
+        Press Enter to {getActionText(item).toLowerCase()}.
+      </div>
+    </aside>
+  );
+}
+
+function getItemLabel(item: Item, sections: CommandSection[]): string {
+  return (
+    sections.find((section) => section.items.some((sectionItem) => sectionItem.id === item.id))
+      ?.label ?? item.type
+  );
 }
 
 export function CommandPalette({
@@ -59,6 +153,40 @@ export function CommandPalette({
     [setTheme, isDark],
   );
 
+  const sections: CommandSection[] = useMemo(
+    () => [
+      { heading: 'Pages', label: 'Page', items: COMMAND_ITEMS.pages },
+      { heading: 'Projects', label: 'Project', items: COMMAND_ITEMS.projects },
+      { heading: 'Experience', label: 'Experience', items: COMMAND_ITEMS.experience },
+      { heading: 'Education', label: 'Education', items: COMMAND_ITEMS.education },
+      { heading: 'Actions', label: 'Action', items: [...COMMAND_ITEMS.actions, themeItem] },
+    ],
+    [themeItem],
+  );
+
+  const flatItems = useMemo(() => sections.flatMap((section) => section.items), [sections]);
+
+  const filtered = useMemo(() => {
+    const trimmed = query.trim();
+    if (!trimmed) return flatItems;
+
+    return fuzzysort
+      .go(trimmed, flatItems, {
+        keys: [(item) => getSearchText(item)],
+        threshold: -1000,
+      })
+      .map((result) => result.obj);
+  }, [query, flatItems]);
+
+  const itemById = useMemo(() => new Map(flatItems.map((item) => [item.id, item])), [flatItems]);
+
+  const selected = useMemo(() => {
+    const active = itemById.get(activeId);
+    if (active && filtered.some((item) => item.id === active.id)) return active;
+    return filtered[0] ?? null;
+  }, [activeId, filtered, itemById]);
+  const selectedLabel = selected ? getItemLabel(selected, sections) : '';
+
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
     setTimeout(() => {
@@ -72,255 +200,91 @@ export function CommandPalette({
     (item: Item) => {
       if (item.type === 'route' || item.type === 'preview') {
         router.push(item.href);
-      } else if (item.type === 'action') {
+      } else {
         item.action();
       }
+
       setOpen(false);
-      return;
     },
     [router, setOpen],
   );
 
-  const all = useMemo(
-    () => ({
-      pages: COMMAND_ITEMS.pages,
-      projects: COMMAND_ITEMS.projects,
-      experience: COMMAND_ITEMS.experience,
-      education: COMMAND_ITEMS.education,
-      actions: [...COMMAND_ITEMS.actions, themeItem],
-    }),
-    [themeItem],
-  );
-
-  const itemById = useMemo(() => {
-    const flat = [
-      ...all.pages,
-      ...all.projects,
-      ...all.experience,
-      ...all.education,
-      ...[...COMMAND_ITEMS.actions, themeItem],
-    ];
-    return new Map(flat.map((it) => [it.id, it]));
-  }, [all, themeItem]);
-
-  const selected = useMemo(() => itemById.get(activeId) ?? null, [activeId, itemById]);
-
   const handleValueChange = useCallback(
-    (v: string) => {
-      if (itemById.has(v)) setActiveId(v);
+    (value: string) => {
+      if (itemById.has(value)) setActiveId(value);
     },
     [itemById],
   );
 
-  const flatItems = useMemo(
-    () => [
-      ...all.pages,
-      ...all.projects,
-      ...all.experience,
-      ...all.education,
-      ...[...COMMAND_ITEMS.actions, themeItem],
-    ],
-    [all, themeItem],
-  );
-
-  const filtered = useMemo(() => {
-    if (!query) return flatItems;
-
-    return fuzzysort
-      .go(query, flatItems, {
-        keys: [(item) => getSearchText(item)],
-        threshold: -1000,
-      })
-      .map((r) => r.obj);
-  }, [query, flatItems]);
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className='max-w-4xl justify-center border-none bg-transparent p-0'
+        className='w-[min(calc(100vw-1.5rem),58rem)] max-w-none overflow-hidden border p-0 shadow-2xl sm:max-w-none'
         showCloseButton={false}>
-        <DialogHeader className='bg-background rounded-md border px-4 py-2 shadow'>
-          <DialogTitle className='flex items-center gap-2 text-sm font-medium'>
-            <Terminal size={64} className='h-5 w-5' /> Command Palette
-          </DialogTitle>
+        <DialogHeader className='sr-only'>
+          <DialogTitle>Command Palette</DialogTitle>
         </DialogHeader>
-        <div className='flex max-h-130 gap-2'>
-          <Command
-            value={activeId}
-            onValueChange={handleValueChange}
-            shouldFilter={false}
-            className='shadow md:w-md'>
-            <CommandInput
-              placeholder='Search pages, projects, experience, education...'
-              value={query}
-              onValueChange={setQuery}
-            />
 
-            <CommandList className='max-h-130'>
-              <CommandEmpty>No results found.</CommandEmpty>
+        <Command
+          value={selected?.id ?? ''}
+          onValueChange={handleValueChange}
+          shouldFilter={false}
+          className='bg-background rounded-lg [&_[data-slot=command-input-wrapper]]:h-14 [&_[data-slot=command-input-wrapper]]:px-4 [&_[data-slot=command-input]]:h-14'>
+          <div className='grid h-[min(72vh,31rem)] lg:grid-cols-[minmax(0,1fr)_22rem]'>
+            <div className='flex min-h-0 flex-col'>
+              <CommandInput
+                placeholder='Search pages, projects, experience, education...'
+                value={query}
+                onValueChange={setQuery}
+                className='text-base'
+              />
 
-              {!query ? (
-                <>
-                  <CommandGroup heading='Pages'>
-                    {all.pages.map((item) => (
-                      <CommandItem
+              <CommandList className='command-palette-scroll max-h-none min-h-0 flex-1 scroll-py-2 px-2 py-2'>
+                <CommandEmpty className='text-muted-foreground py-12 text-center text-sm'>
+                  No commands found.
+                </CommandEmpty>
+
+                {query.trim() ? (
+                  <CommandGroup heading='Results' className='p-0'>
+                    {filtered.map((item) => (
+                      <CommandRow
                         key={item.id}
-                        value={item.id}
-                        onSelect={() => run(item)}
-                        onMouseEnter={() => setActiveId(item.id)}>
-                        <div className='flex w-full items-center justify-between gap-3'>
-                          <div>
-                            <div className='text-sm font-medium'>{item.title()}</div>
-                            {item.subtitle ? (
-                              <div className='text-muted-foreground text-xs'>{item.subtitle}</div>
-                            ) : null}
-                          </div>
-                        </div>
-                      </CommandItem>
+                        item={item}
+                        label={getItemLabel(item, sections)}
+                        onRun={run}
+                        onActive={setActiveId}
+                      />
                     ))}
                   </CommandGroup>
-
-                  <CommandSeparator />
-
-                  <CommandGroup heading='Projects'>
-                    {all.projects.map((item) => (
-                      <CommandItem
-                        key={item.id}
-                        value={item.id}
-                        onSelect={() => run(item)}
-                        onMouseEnter={() => setActiveId(item.id)}>
-                        <div className='flex w-full items-center justify-between gap-3'>
-                          <div>
-                            <div className='text-sm font-medium'>{item.title()}</div>
-                            {item.subtitle ? (
-                              <div className='text-muted-foreground text-xs'>{item.subtitle}</div>
-                            ) : null}
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-
-                  <CommandSeparator />
-
-                  <CommandGroup heading='Experience'>
-                    {all.experience.map((item) => (
-                      <CommandItem
-                        key={item.id}
-                        value={item.id}
-                        onSelect={() => run(item)}
-                        onMouseEnter={() => setActiveId(item.id)}>
-                        <div className='flex w-full items-center justify-between gap-3'>
-                          <div>
-                            <div className='text-sm font-medium'>{item.title()}</div>
-                            {item.subtitle ? (
-                              <div className='text-muted-foreground text-xs'>{item.subtitle}</div>
-                            ) : null}
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-
-                  <CommandSeparator />
-
-                  <CommandGroup heading='Education'>
-                    {all.education.map((item) => (
-                      <CommandItem
-                        key={item.id}
-                        value={item.id}
-                        onSelect={() => run(item)}
-                        onMouseEnter={() => setActiveId(item.id)}>
-                        <div className='flex w-full items-center justify-between gap-3'>
-                          <div>
-                            <div className='text-sm font-medium'>{item.title()}</div>
-                            {item.subtitle ? (
-                              <div className='text-muted-foreground text-xs'>{item.subtitle}</div>
-                            ) : null}
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-
-                  <CommandSeparator />
-
-                  <CommandGroup heading='Actions'>
-                    {all.actions.map((item) => (
-                      <CommandItem
-                        key={item.id}
-                        value={item.id}
-                        onSelect={() => {
-                          if (item.type !== 'action') return;
-                          item.action();
-                          setOpen(false);
-                        }}
-                        onMouseEnter={() => setActiveId(item.id)}>
-                        <div className='flex w-full items-center justify-between gap-4'>
-                          <div className='space-y-1'>
-                            <div className='text-sm font-medium'>{item.title()}</div>
-                            {item.subtitle ? (
-                              <div className='text-muted-foreground text-xs'>{item.subtitle}</div>
-                            ) : null}
-                          </div>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </>
-              ) : filtered.length > 0 ? (
-                <CommandGroup heading='Search results'>
-                  {filtered.map((item) => (
-                    <CommandItem
-                      key={item.id}
-                      value={item.id}
-                      onSelect={() => run(item)}
-                      onMouseEnter={() => setActiveId(item.id)}>
-                      <div className='flex w-full items-center justify-between gap-3'>
-                        <div>
-                          <div className='text-sm font-medium'>{item.title()}</div>
-                          {item.subtitle ? (
-                            <div className='text-muted-foreground text-xs'>{item.subtitle}</div>
-                          ) : null}
-                        </div>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ) : null}
-            </CommandList>
-          </Command>
-
-          {selected ? (
-            <div className='bg-background hidden min-h-100 w-115 rounded-md border p-4 shadow lg:block'>
-              {selected.type === 'preview' ? (
-                <div>
-                  <div className='text-sm font-semibold'>
-                    {selected.preview.heading ?? selected.title()}
-                  </div>
-                  <p className='text-muted-foreground mt-2 text-sm leading-relaxed'>
-                    {selected.preview.body}
-                  </p>
-
-                  {selected.preview.bullets?.length ? (
-                    <ul className='text-muted-foreground mt-3 list-disc space-y-1 pl-5 text-sm'>
-                      {selected.preview.bullets.map((b) => (
-                        <li key={b}>{b}</li>
+                ) : (
+                  sections.map((section) => (
+                    <CommandGroup key={section.heading} heading={section.heading} className='p-0'>
+                      {section.items.map((item) => (
+                        <CommandRow
+                          key={item.id}
+                          item={item}
+                          label={section.label}
+                          onRun={run}
+                          onActive={setActiveId}
+                        />
                       ))}
-                    </ul>
-                  ) : null}
+                    </CommandGroup>
+                  ))
+                )}
+              </CommandList>
+
+              <div className='text-muted-foreground flex h-8 shrink-0 items-center justify-between gap-3 border-t px-4 text-[11px]'>
+                <div className='flex items-center gap-2'>
+                  <CornerDownLeft className='h-3 w-3' />
+                  <span>Open selected</span>
                 </div>
-              ) : (
-                <div>
-                  <div className='text-sm font-semibold'>{selected.title()}</div>
-                  <p className='text-muted-foreground mt-2 text-sm leading-relaxed'>
-                    {selected.subtitle}
-                  </p>
-                </div>
-              )}
+                <span>Esc to close</span>
+              </div>
             </div>
-          ) : null}
-        </div>
+
+            {selected ? <SelectedPreview item={selected} label={selectedLabel} /> : null}
+          </div>
+        </Command>
       </DialogContent>
     </Dialog>
   );
@@ -332,18 +296,17 @@ export function CommandPaletteButton() {
 
   return (
     <Button
-      variant={'outline'}
+      variant='outline'
       onClick={open}
       onMouseEnter={warmup}
       onFocus={warmup}
-      className='flex items-center justify-between px-2'>
-      <div className='mr-4 flex items-center justify-center gap-2'>
-        <Search />
-        <p className='text-muted-foreground text-xs'>Search...</p>
+      className='flex items-center justify-between gap-3 px-2.5'>
+      <div className='flex min-w-0 items-center justify-center gap-2'>
+        <Search className='h-4 w-4' />
+        <p className='text-muted-foreground hidden text-xs sm:block'>Search...</p>
       </div>
-      <div className='space-x-0.5 text-xs'>
+      <div className='flex items-center gap-1 text-xs'>
         <kbd className='bg-accent rounded border px-1.5 py-0.5'>{isMac ? '⌘' : 'Ctrl'}</kbd>
-        <span>+</span>
         <kbd className='bg-accent rounded border px-1.5 py-0.5'>K</kbd>
       </div>
     </Button>
