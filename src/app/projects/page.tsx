@@ -113,13 +113,6 @@ export default function ProjectsPage() {
         <div className='bg-primary h-0.5 flex-1' />
       </div>
 
-      <section className='space-y-2'>
-        <p className='text-muted-foreground text-sm font-medium'>Selected work</p>
-        <p className='max-w-3xl text-3xl leading-tight font-semibold tracking-normal md:text-4xl'>
-          Full-stack projects with enough surface area to show the product and the system behind it.
-        </p>
-      </section>
-
       <section className='space-y-4'>
         <div className='divide-border divide-y'>
           {projects.map((project) => (
