@@ -1,4 +1,5 @@
-import { contactFormSchema, sendContactEmail } from '@/lib/contact';
+import { sendContactEmail } from '@/lib/contact';
+import { contactFormSchema } from '@/lib/contact-schema';
 
 import { NextRequest, NextResponse } from 'next/server';
 

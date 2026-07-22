@@ -1,3 +1,12 @@
+import { SpotifyOAuthError, refreshSpotifyAccessToken } from '@/lib/spotify-oauth';
+import {
+  isSpotifyGrantWriteConflict,
+  readSpotifyGrant,
+  writeSpotifyGrant,
+} from '@/lib/spotify-token-store';
+
+import type { SpotifyGrant, StoredSpotifyGrant } from '@/lib/spotify-token-store';
+
 export interface SpotifyTrack {
   id: string;
   name: string;
@@ -10,35 +19,133 @@ export interface SpotifyTrack {
 
 const SPOTIFY_TOP_TRACKS_REVALIDATE_SECONDS = 300;
 const SPOTIFY_RESULT_LIMIT = 5;
+const ACCESS_TOKEN_EXPIRY_BUFFER_MS = 60_000;
+const MAX_TOKEN_ROTATION_RETRIES = 2;
 
-async function getSpotifyToken(): Promise<string | null> {
-  const refreshToken = process.env.SPOTIFY_REFRESH_TOKEN;
-  const clientId = process.env.SPOTIFY_CLIENT_ID;
-  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+let cachedAccessToken: { token: string; expiresAt: number } | null = null;
+let tokenRefreshPromise: Promise<string> | null = null;
 
-  if (!refreshToken || !clientId || !clientSecret) {
-    return null;
+export class SpotifyAuthorizationRequiredError extends Error {
+  constructor() {
+    super('Spotify authorization is required. Visit /api/spotify/login to reconnect the account.');
+    this.name = 'SpotifyAuthorizationRequiredError';
+  }
+}
+
+async function getSpotifyToken(forceRefresh = false): Promise<string> {
+  const now = Date.now();
+  const localAccessToken = cachedAccessToken;
+
+  if (
+    !forceRefresh &&
+    localAccessToken &&
+    localAccessToken.expiresAt > now + ACCESS_TOKEN_EXPIRY_BUFFER_MS
+  ) {
+    return localAccessToken.token;
   }
 
-  const body = new URLSearchParams({
-    grant_type: 'refresh_token',
-    refresh_token: refreshToken,
-    client_id: clientId,
-    client_secret: clientSecret,
-  });
-
-  const tokenRes = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body,
-  });
-
-  if (!tokenRes.ok) {
-    throw new Error(`Spotify token request failed with status ${tokenRes.status}`);
+  if (tokenRefreshPromise) {
+    return tokenRefreshPromise;
   }
 
-  const data = (await tokenRes.json()) as { access_token?: string };
-  return data.access_token ?? null;
+  tokenRefreshPromise = resolveSpotifyToken(forceRefresh).finally(() => {
+    tokenRefreshPromise = null;
+  });
+
+  return tokenRefreshPromise;
+}
+
+async function resolveSpotifyToken(forceRefresh: boolean): Promise<string> {
+  const stored = await readSpotifyGrant();
+
+  if (!stored) {
+    throw new SpotifyAuthorizationRequiredError();
+  }
+
+  if (
+    !forceRefresh &&
+    stored.grant.accessTokenExpiresAt > Date.now() + ACCESS_TOKEN_EXPIRY_BUFFER_MS
+  ) {
+    cacheAccessToken(stored.grant);
+    return stored.grant.accessToken;
+  }
+
+  return refreshStoredSpotifyToken(stored);
+}
+
+async function refreshStoredSpotifyToken(
+  stored: StoredSpotifyGrant,
+  attemptedRefreshToken?: string,
+  retryCount = 0,
+): Promise<string> {
+  let tokenSet;
+
+  try {
+    tokenSet = await refreshSpotifyAccessToken(stored.grant.refreshToken);
+  } catch (error) {
+    if (error instanceof SpotifyOAuthError && error.code === 'invalid_grant') {
+      const latest = await readSpotifyGrant();
+
+      if (
+        latest &&
+        latest.grant.refreshToken !== stored.grant.refreshToken &&
+        latest.grant.refreshToken !== attemptedRefreshToken &&
+        retryCount < MAX_TOKEN_ROTATION_RETRIES
+      ) {
+        return refreshStoredSpotifyToken(latest, stored.grant.refreshToken, retryCount + 1);
+      }
+
+      throw new SpotifyAuthorizationRequiredError();
+    }
+
+    throw error;
+  }
+
+  const now = Date.now();
+  const updatedGrant: SpotifyGrant = {
+    ...stored.grant,
+    accessToken: tokenSet.accessToken,
+    accessTokenExpiresAt: now + tokenSet.expiresIn * 1000,
+    refreshToken: tokenSet.refreshToken ?? stored.grant.refreshToken,
+    scope: tokenSet.scope || stored.grant.scope,
+    updatedAt: new Date(now).toISOString(),
+  };
+
+  try {
+    await writeSpotifyGrant(updatedGrant, stored.etag);
+    cacheAccessToken(updatedGrant);
+    return updatedGrant.accessToken;
+  } catch (error) {
+    if (!isSpotifyGrantWriteConflict(error)) {
+      throw error;
+    }
+
+    const latest = await readSpotifyGrant();
+
+    if (!latest) {
+      throw new SpotifyAuthorizationRequiredError();
+    }
+
+    if (latest.grant.accessTokenExpiresAt > Date.now() + ACCESS_TOKEN_EXPIRY_BUFFER_MS) {
+      cacheAccessToken(latest.grant);
+      return latest.grant.accessToken;
+    }
+
+    if (retryCount >= MAX_TOKEN_ROTATION_RETRIES) {
+      throw new Error('Spotify token rotation was updated concurrently; retry the request.', {
+        cause: error,
+      });
+    }
+
+    return refreshStoredSpotifyToken(latest, stored.grant.refreshToken, retryCount + 1);
+  }
+}
+
+function cacheAccessToken(grant: SpotifyGrant) {
+  cachedAccessToken = {
+    token: grant.accessToken,
+    expiresAt: grant.accessTokenExpiresAt,
+  };
 }
 
 async function fetchSpotify<T>(
@@ -48,13 +155,33 @@ async function fetchSpotify<T>(
     revalidate?: number;
   },
 ): Promise<T> {
-  const token = await getSpotifyToken();
+  let token = await getSpotifyToken();
+  let response = await requestSpotify(url, token, options);
 
-  if (!token) {
-    throw new Error('Spotify credentials are not configured');
+  if (response.status === 401) {
+    cachedAccessToken = null;
+    token = await getSpotifyToken(true);
+    response = await requestSpotify(url, token, options);
   }
 
-  const response = await fetch(url, {
+  if (!response.ok) {
+    const retryAfter = response.headers.get('Retry-After');
+    const retryDetails = retryAfter ? `; retry after ${retryAfter} seconds` : '';
+    throw new Error(`Spotify request failed with status ${response.status}${retryDetails}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+function requestSpotify(
+  url: string,
+  token: string,
+  options?: {
+    cache?: RequestCache;
+    revalidate?: number;
+  },
+) {
+  return fetch(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -67,12 +194,6 @@ async function fetchSpotify<T>(
         }
       : {}),
   });
-
-  if (!response.ok) {
-    throw new Error(`Spotify request failed with status ${response.status}`);
-  }
-
-  return response.json() as Promise<T>;
 }
 
 export async function getRecentlyPlayedTracks(): Promise<SpotifyTrack[]> {

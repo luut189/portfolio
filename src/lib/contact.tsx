@@ -1,24 +1,16 @@
+import 'server-only';
 import ContactEmail from '@/lib/contact-email';
+import { getResendEnvironment } from '@/lib/env';
 
 import { render as renderEmail } from '@react-email/render';
-import { z } from 'zod';
 
-export const contactFormSchema = z.object({
-  name: z.string().min(2, { error: 'Name must be at least 2 characters' }),
-  email: z.email({ error: 'Please enter a valid email address' }),
-  subject: z.string().min(1, { error: 'Subject cannot be empty' }),
-  message: z.string().min(1, { error: 'Message cannot be empty' }),
-});
-
-export type ContactFormValues = z.infer<typeof contactFormSchema>;
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const RESEND_RECEIVER = process.env.RESEND_RECEIVER ?? 'delivered@resend.dev';
+import type { ContactFormValues } from '@/lib/contact-schema';
 
 export async function sendContactEmail(
   values: ContactFormValues,
   options?: { ip?: string },
 ): Promise<void> {
+  const { apiKey, receiver } = getResendEnvironment();
   const timestamp = new Date().toLocaleString('en-US', {
     dateStyle: 'long',
     timeStyle: 'short',
@@ -39,11 +31,11 @@ export async function sendContactEmail(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${RESEND_API_KEY}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       from: 'Kyzel.dev <noreply@anidis.moe>',
-      to: [RESEND_RECEIVER],
+      to: [receiver],
       subject: values.subject,
       html,
     }),
