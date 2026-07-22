@@ -14,8 +14,8 @@ import { COMMAND_ITEMS, type CommandItem as Item } from '@/lib/command-items';
 
 import fuzzysort from 'fuzzysort';
 import { ArrowRight, CornerDownLeft, Search } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useCallback, useMemo, useState } from 'react';
 
 import { Button } from './ui/button';
@@ -59,21 +59,21 @@ function CommandRow({
       value={item.id}
       onSelect={() => onRun(item)}
       onMouseEnter={() => onActive(item.id)}
-      className='group data-[selected=true]:bg-primary/10 data-[selected=true]:text-foreground data-[selected=true]:ring-primary/15 mx-1 rounded-lg px-3 py-2.5 data-[selected=true]:ring-1'>
+      className='group mx-1 rounded-lg px-3 py-2.5 data-[selected=true]:bg-primary/10 data-[selected=true]:text-foreground data-[selected=true]:ring-1 data-[selected=true]:ring-primary/15'>
       <div className='grid min-w-0 flex-1 gap-1'>
         <div className='flex min-w-0 items-center gap-2'>
           <span className='truncate text-sm font-medium'>{item.title()}</span>
-          <span className='bg-accent text-muted-foreground group-data-[selected=true]:bg-background/70 group-data-[selected=true]:text-foreground/70 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-medium'>
+          <span className='shrink-0 rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground group-data-[selected=true]:bg-background/70 group-data-[selected=true]:text-foreground/70'>
             {label}
           </span>
         </div>
         {item.subtitle ? (
-          <p className='text-muted-foreground group-data-[selected=true]:text-foreground/70 truncate text-xs'>
+          <p className='truncate text-xs text-muted-foreground group-data-[selected=true]:text-foreground/70'>
             {item.subtitle}
           </p>
         ) : null}
       </div>
-      <ArrowRight className='text-muted-foreground group-data-[selected=true]:text-foreground/80 ml-2 h-4 w-4 opacity-0 transition-opacity group-data-[selected=true]:opacity-100' />
+      <ArrowRight className='ml-2 h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-data-[selected=true]:text-foreground/80 group-data-[selected=true]:opacity-100' />
     </CommandItem>
   );
 }
@@ -84,19 +84,19 @@ function SelectedPreview({ item, label }: { item: Item; label: string }) {
   const bullets = item.type === 'preview' ? item.preview.bullets?.slice(0, 4) : undefined;
 
   return (
-    <aside className='bg-card hidden h-full min-h-0 border-l lg:flex lg:w-88 lg:flex-col'>
+    <aside className='hidden h-full min-h-0 border-l bg-card lg:flex lg:w-88 lg:flex-col'>
       <div className='command-palette-scroll min-h-0 flex-1 overflow-y-auto p-5'>
         <div className='space-y-3'>
           <div className='flex items-center justify-between gap-3'>
-            <span className='bg-accent text-muted-foreground rounded px-2 py-1 text-xs font-medium'>
+            <span className='rounded bg-accent px-2 py-1 text-xs font-medium text-muted-foreground'>
               {label}
             </span>
-            <span className='text-muted-foreground text-xs'>{getActionText(item)}</span>
+            <span className='text-xs text-muted-foreground'>{getActionText(item)}</span>
           </div>
 
           <div className='space-y-2'>
             <h2 className='text-lg leading-snug font-semibold'>{heading}</h2>
-            {body ? <p className='text-muted-foreground text-sm leading-6'>{body}</p> : null}
+            {body ? <p className='text-sm leading-6 text-muted-foreground'>{body}</p> : null}
           </div>
         </div>
 
@@ -104,7 +104,7 @@ function SelectedPreview({ item, label }: { item: Item; label: string }) {
           <ul className='mt-5 space-y-3 text-sm leading-6'>
             {bullets.map((bullet) => (
               <li key={bullet} className='flex gap-3'>
-                <span className='bg-primary mt-2 h-1.5 w-1.5 shrink-0 rounded-full' />
+                <span className='mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary' />
                 <span>{bullet}</span>
               </li>
             ))}
@@ -112,7 +112,7 @@ function SelectedPreview({ item, label }: { item: Item; label: string }) {
         ) : null}
       </div>
 
-      <div className='text-muted-foreground flex h-10 shrink-0 items-center border-t px-5 text-xs'>
+      <div className='flex h-10 shrink-0 items-center border-t px-5 text-xs text-muted-foreground'>
         Press Enter to {getActionText(item).toLowerCase()}.
       </div>
     </aside>
@@ -229,7 +229,7 @@ export function CommandPalette({
           value={selected?.id ?? ''}
           onValueChange={handleValueChange}
           shouldFilter={false}
-          className='bg-background rounded-lg [&_[data-slot=command-input-wrapper]]:h-14 [&_[data-slot=command-input-wrapper]]:px-4 [&_[data-slot=command-input]]:h-14'>
+          className='rounded-lg bg-background [&_[data-slot=command-input-wrapper]]:h-14 [&_[data-slot=command-input-wrapper]]:px-4 [&_[data-slot=command-input]]:h-14'>
           <div className='grid h-[min(72vh,31rem)] lg:grid-cols-[minmax(0,1fr)_22rem]'>
             <div className='flex min-h-0 flex-col'>
               <CommandInput
@@ -240,7 +240,7 @@ export function CommandPalette({
               />
 
               <CommandList className='command-palette-scroll max-h-none min-h-0 flex-1 scroll-py-2 px-2 py-2'>
-                <CommandEmpty className='text-muted-foreground py-12 text-center text-sm'>
+                <CommandEmpty className='py-12 text-center text-sm text-muted-foreground'>
                   No commands found.
                 </CommandEmpty>
 
@@ -273,7 +273,7 @@ export function CommandPalette({
                 )}
               </CommandList>
 
-              <div className='text-muted-foreground flex h-8 shrink-0 items-center justify-between gap-3 border-t px-4 text-[11px]'>
+              <div className='flex h-8 shrink-0 items-center justify-between gap-3 border-t px-4 text-[11px] text-muted-foreground'>
                 <div className='flex items-center gap-2'>
                   <CornerDownLeft className='h-3 w-3' />
                   <span>Open selected</span>
@@ -303,11 +303,11 @@ export function CommandPaletteButton() {
       className='flex items-center justify-between gap-3 px-2.5'>
       <div className='flex min-w-0 items-center justify-center gap-2'>
         <Search className='h-4 w-4' />
-        <p className='text-muted-foreground hidden text-xs sm:block'>Search...</p>
+        <p className='hidden text-xs text-muted-foreground sm:block'>Search...</p>
       </div>
       <div className='flex items-center gap-1 text-xs'>
-        <kbd className='bg-accent rounded border px-1.5 py-0.5'>{isMac ? '⌘' : 'Ctrl'}</kbd>
-        <kbd className='bg-accent rounded border px-1.5 py-0.5'>K</kbd>
+        <kbd className='rounded border bg-accent px-1.5 py-0.5'>{isMac ? '⌘' : 'Ctrl'}</kbd>
+        <kbd className='rounded border bg-accent px-1.5 py-0.5'>K</kbd>
       </div>
     </Button>
   );

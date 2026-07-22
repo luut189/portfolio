@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+/* oxlint-disable nextjs/no-img-element -- ImageResponse requires a raw image element. */
 import { ImageResponse } from '@vercel/og';
 
 export const runtime = 'edge';

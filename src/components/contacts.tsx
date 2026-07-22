@@ -28,7 +28,7 @@ export default function Contacts() {
       {contacts.map((contact) => (
         <a
           key={contact.href}
-          className='text-foreground hover:text-muted-foreground transition-all hover:scale-110'
+          className='text-foreground transition-all hover:scale-110 hover:text-muted-foreground'
           rel='noopener noreferrer'
           target='_blank'
           aria-label={contact.label}

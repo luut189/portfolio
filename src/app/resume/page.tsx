@@ -11,14 +11,14 @@ export default function ResumePage() {
       <div className='flex items-center justify-center gap-2'>
         <File />
         <h1 className='text-xl font-semibold whitespace-nowrap'>Resume</h1>
-        <div className='bg-primary h-0.5 flex-1' />
+        <div className='h-0.5 flex-1 bg-primary' />
         <Button variant={'outline'} size={'icon'} title='Download resume' asChild>
           <Link href={resumeHref} download='TuongLuuResume.pdf'>
             <ArrowDownToLine />
           </Link>
         </Button>
       </div>
-      <div className='bg-accent text-accent-foreground flex flex-col gap-3 rounded-lg p-4 md:hidden'>
+      <div className='flex flex-col gap-3 rounded-lg bg-accent p-4 text-accent-foreground md:hidden'>
         <p className='text-sm'>
           The embedded PDF works best on larger screens. On mobile, open it in a new tab or download
           it directly.
@@ -36,10 +36,11 @@ export default function ResumePage() {
           </Button>
         </div>
       </div>
-      <div className='bg-accent hidden w-full rounded-lg p-2 md:block'>
+      <div className='hidden w-full rounded-lg bg-accent p-2 md:block'>
         <iframe
           title='Tuong Luu resume PDF'
           className='h-[70dvh] w-full'
+          sandbox='allow-downloads allow-same-origin'
           src='https://luut189.github.io/resume-repo/resume.pdf#toolbar=0'
         />
       </div>

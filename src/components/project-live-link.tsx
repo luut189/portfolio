@@ -38,7 +38,7 @@ export default function ProjectLiveLink({ href, projectName, featured }: Project
     <div className='relative'>
       {showHint ? (
         <div className='absolute -top-9 right-13 flex rotate-[8deg] items-start'>
-          <span className='font-handwritten absolute -top-1 right-10 text-lg whitespace-nowrap'>
+          <span className='absolute -top-1 right-10 font-handwritten text-lg whitespace-nowrap'>
             psst, click here
           </span>
           <HandDrawnArrow />

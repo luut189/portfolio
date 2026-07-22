@@ -31,16 +31,16 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </Link>
         </Button>
         <p className='text-xl font-semibold whitespace-nowrap'>Project</p>
-        <div className='bg-primary h-0.5 flex-1' />
+        <div className='h-0.5 flex-1 bg-primary' />
       </div>
 
       <section className='grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-end'>
         <div className='space-y-3'>
-          <p className='text-muted-foreground text-sm font-medium'>{project.tagline}</p>
+          <p className='text-sm font-medium text-muted-foreground'>{project.tagline}</p>
           <h1 className='text-4xl leading-tight font-semibold tracking-normal md:text-5xl'>
             {project.name}
           </h1>
-          <p className='text-muted-foreground max-w-3xl text-base leading-7'>
+          <p className='max-w-3xl text-base leading-7 text-muted-foreground'>
             {project.caseStudy?.summary ?? project.highlights[0]}
           </p>
         </div>
@@ -73,8 +73,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       </section>
 
       {primaryImage ? (
-        <figure className='bg-card overflow-hidden rounded-xl border shadow-sm dark:border-none'>
-          <div className='bg-accent relative aspect-[16/10] w-full md:aspect-[16/9]'>
+        <figure className='overflow-hidden rounded-xl border bg-card shadow-sm dark:border-none'>
+          <div className='relative aspect-[16/10] w-full bg-accent md:aspect-[16/9]'>
             <Image
               src={primaryImage.src}
               alt={primaryImage.alt}
@@ -85,7 +85,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             />
           </div>
           {primaryImage.caption ? (
-            <figcaption className='text-muted-foreground border-t px-4 py-3 text-sm'>
+            <figcaption className='border-t px-4 py-3 text-sm text-muted-foreground'>
               {primaryImage.caption}
             </figcaption>
           ) : null}
@@ -98,7 +98,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <>
               <section className='rounded-xl border p-5 shadow-sm dark:border-none'>
                 <h2 className='text-lg font-semibold'>Role</h2>
-                <p className='text-muted-foreground mt-2 leading-7'>{project.caseStudy.role}</p>
+                <p className='mt-2 leading-7 text-muted-foreground'>{project.caseStudy.role}</p>
               </section>
 
               {project.caseStudy.sections.map((section) => (
@@ -107,12 +107,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   className='rounded-xl border p-5 shadow-sm dark:border-none'>
                   <div className='max-w-3xl space-y-2'>
                     <h2 className='text-lg font-semibold'>{section.title}</h2>
-                    <p className='text-muted-foreground leading-7'>{section.body}</p>
+                    <p className='leading-7 text-muted-foreground'>{section.body}</p>
                   </div>
                   <ul className='mt-4 space-y-3 text-sm leading-6'>
                     {section.points.map((point) => (
                       <li key={point} className='flex gap-3'>
-                        <span className='bg-primary mt-2 h-1.5 w-1.5 shrink-0 rounded-full' />
+                        <span className='mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary' />
                         <span>{point}</span>
                       </li>
                     ))}
@@ -126,7 +126,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <ul className='mt-4 space-y-3 text-sm leading-6'>
                 {project.highlights.map((item) => (
                   <li key={item} className='flex gap-3'>
-                    <span className='bg-primary mt-2 h-1.5 w-1.5 shrink-0 rounded-full' />
+                    <span className='mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary' />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -141,8 +141,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {images.slice(1).map((image) => (
                   <figure
                     key={image.src}
-                    className='bg-card overflow-hidden rounded-xl border shadow-sm dark:border-none'>
-                    <div className='bg-accent relative aspect-[16/10]'>
+                    className='overflow-hidden rounded-xl border bg-card shadow-sm dark:border-none'>
+                    <div className='relative aspect-[16/10] bg-accent'>
                       <Image
                         src={image.src}
                         alt={image.alt}
@@ -153,7 +153,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       />
                     </div>
                     {image.caption ? (
-                      <figcaption className='text-muted-foreground border-t px-4 py-3 text-sm'>
+                      <figcaption className='border-t px-4 py-3 text-sm text-muted-foreground'>
                         {image.caption}
                       </figcaption>
                     ) : null}
@@ -173,7 +173,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 return (
                   <span
                     key={tech}
-                    className='bg-accent text-accent-foreground flex items-center justify-center gap-2 rounded-lg p-2 text-sm'>
+                    className='flex items-center justify-center gap-2 rounded-lg bg-accent p-2 text-sm text-accent-foreground'>
                     <Image
                       src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${techStr}/${techStr}-original.svg`}
                       alt=''
@@ -191,7 +191,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
           <section className='rounded-xl border p-4 shadow-sm dark:border-none'>
             <h2 className='text-sm font-semibold'>Core Work</h2>
-            <ul className='text-muted-foreground mt-3 space-y-2 text-sm leading-6'>
+            <ul className='mt-3 space-y-2 text-sm leading-6 text-muted-foreground'>
               {project.highlights.slice(0, 3).map((item) => (
                 <li key={item}>{item}</li>
               ))}

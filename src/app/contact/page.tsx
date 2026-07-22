@@ -59,7 +59,7 @@ export default function ContactPage() {
     <div className='mx-4 w-full'>
       <div className='flex items-center justify-center gap-2'>
         <h1 className='text-2xl font-semibold whitespace-nowrap'>Contact Me</h1>
-        <div className='bg-primary h-0.5 flex-1' />
+        <div className='h-0.5 flex-1 bg-primary' />
       </div>
       <Form {...form}>
         <form
@@ -76,7 +76,7 @@ export default function ContactPage() {
                     <Input
                       placeholder='John Doe'
                       {...field}
-                      className='border-primary rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                      className='rounded-none border-0 border-b border-primary bg-transparent focus-visible:ring-0 dark:bg-transparent'
                     />
                   </FormControl>
                   <FormMessage />
@@ -94,7 +94,7 @@ export default function ContactPage() {
                     <Input
                       placeholder='john@example.com'
                       {...field}
-                      className='border-primary rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                      className='rounded-none border-0 border-b border-primary bg-transparent focus-visible:ring-0 dark:bg-transparent'
                     />
                   </FormControl>
                   <FormMessage />
@@ -113,7 +113,7 @@ export default function ContactPage() {
                   <Input
                     placeholder='Subject of your message'
                     {...field}
-                    className='border-primary rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                    className='rounded-none border-0 border-b border-primary bg-transparent focus-visible:ring-0 dark:bg-transparent'
                   />
                 </FormControl>
                 <FormMessage />
@@ -131,7 +131,7 @@ export default function ContactPage() {
                   <Textarea
                     placeholder='Your message...'
                     {...field}
-                    className='border-primary min-h-30 rounded-none border-0 border-b bg-transparent focus-visible:ring-0 dark:bg-transparent'
+                    className='min-h-30 rounded-none border-0 border-b border-primary bg-transparent focus-visible:ring-0 dark:bg-transparent'
                   />
                 </FormControl>
                 <FormMessage />
@@ -155,7 +155,7 @@ export default function ContactPage() {
           </div>
         </form>
       </Form>
-      <p className='text-muted-foreground p-2 text-center text-sm'>
+      <p className='p-2 text-center text-sm text-muted-foreground'>
         This contact form will send an email to me.
       </p>
     </div>

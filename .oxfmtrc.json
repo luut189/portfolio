@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "bracketSameLine": true,
+  "jsxSingleQuote": true,
+  "printWidth": 100,
+  "semi": true,
+  "singleQuote": true,
+  "sortImports": {
+    "groups": [
+      "builtin",
+      "internal",
+      "external",
+      ["parent", "sibling"],
+      "index",
+      "type",
+      "unknown"
+    ],
+    "ignoreCase": true,
+    "newlinesBetween": true,
+    "order": "asc"
+  },
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "sortTailwindcss": {
+    "stylesheet": "./src/app/globals.css"
+  },
+  "tabWidth": 2,
+  "useTabs": false
+}

@@ -75,7 +75,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${bricolageGrotesque.variable} ${reenieBeanie.variable} selection:bg-primary selection:text-background font-sans antialiased`}>
+        className={`${bricolageGrotesque.variable} ${reenieBeanie.variable} font-sans antialiased selection:bg-primary selection:text-background`}>
         <Providers>{children}</Providers>
         <SpeedInsights />
         <Analytics />

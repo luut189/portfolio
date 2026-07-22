@@ -16,20 +16,20 @@ export default function SpotifyClient({ recentTracks, topTracks }: SpotifyClient
   return (
     <section className='flex flex-col gap-4 p-4 pt-2'>
       <div className='flex items-center justify-between gap-3'>
-        <h2 className='text-muted-foreground text-base font-medium'>Listening</h2>
+        <h2 className='text-base font-medium text-muted-foreground'>Listening</h2>
         {featuredTrack ? (
           <a
             href={featuredTrack.externalUrl}
             target='_blank'
             rel='noopener noreferrer'
-            className='text-muted-foreground hover:text-foreground text-sm underline underline-offset-4'>
+            className='text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground'>
             open in spotify
           </a>
         ) : null}
       </div>
 
       {!featuredTrack ? (
-        <p className='text-muted-foreground text-sm'>Spotify data is unavailable right now.</p>
+        <p className='text-sm text-muted-foreground'>Spotify data is unavailable right now.</p>
       ) : (
         <>
           <div
@@ -47,13 +47,13 @@ export default function SpotifyClient({ recentTracks, topTracks }: SpotifyClient
           <div className='flex flex-col gap-1 pt-1'>
             {recentList.length ? (
               <>
-                <p className='text-muted-foreground text-sm'>recently played</p>
+                <p className='text-sm text-muted-foreground'>recently played</p>
                 <ol className='flex flex-col'>
                   {recentList.map((track, index) => (
                     <li
                       key={track.id}
-                      className='border-border grid grid-cols-[auto_auto_1fr] items-center gap-3 border-b py-2 last:border-b-0'>
-                      <span className='text-muted-foreground text-xs tabular-nums'>
+                      className='grid grid-cols-[auto_auto_1fr] items-center gap-3 border-b border-border py-2 last:border-b-0'>
+                      <span className='text-xs text-muted-foreground tabular-nums'>
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       <a
@@ -71,7 +71,7 @@ export default function SpotifyClient({ recentTracks, topTracks }: SpotifyClient
                           className='block truncate font-medium underline-offset-4 hover:underline'>
                           {track.name}
                         </a>
-                        <p className='text-muted-foreground truncate text-sm'>
+                        <p className='truncate text-sm text-muted-foreground'>
                           {formatArtists(track)}
                         </p>
                       </div>
@@ -84,7 +84,7 @@ export default function SpotifyClient({ recentTracks, topTracks }: SpotifyClient
         </>
       )}
 
-      <p className='font-handwritten text-muted-foreground text-right text-lg'>
+      <p className='text-right font-handwritten text-lg text-muted-foreground'>
         yes, i like j-pop, how did you know?
       </p>
     </section>
@@ -106,7 +106,7 @@ function FeaturedTrack({ label, track }: { label: string; track: SpotifyTrack })
         <TrackPoster track={track} size='80px' />
       </a>
       <div className='flex flex-col gap-1 pt-1'>
-        <p className='text-muted-foreground text-sm'>{label}</p>
+        <p className='text-sm text-muted-foreground'>{label}</p>
         <a
           href={track.externalUrl}
           target='_blank'
@@ -114,7 +114,7 @@ function FeaturedTrack({ label, track }: { label: string; track: SpotifyTrack })
           className='w-fit text-xl font-semibold underline-offset-4 hover:underline'>
           {track.name}
         </a>
-        <p className='text-muted-foreground text-sm sm:text-base'>{formatArtists(track)}</p>
+        <p className='text-sm text-muted-foreground sm:text-base'>{formatArtists(track)}</p>
       </div>
     </div>
   );
@@ -122,7 +122,7 @@ function FeaturedTrack({ label, track }: { label: string; track: SpotifyTrack })
 
 function TrackPoster({ track, size }: { track: SpotifyTrack; size: string }) {
   if (!track.albumArtUrl) {
-    return <div className='bg-muted h-full w-full' />;
+    return <div className='h-full w-full bg-muted' />;
   }
 
   return (

@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 const loadCommandPalette = () => import('@/components/command-palette');
 
@@ -27,6 +27,22 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
     void loadCommandPalette();
   }, []);
 
+  const open = useCallback(() => {
+    warmup();
+    setIsOpen(true);
+  }, [warmup]);
+
+  const close = useCallback(() => setIsOpen(false), []);
+
+  const contextValue = useMemo(
+    () => ({
+      open,
+      close,
+      warmup,
+    }),
+    [close, open, warmup],
+  );
+
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -41,15 +57,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
   }, [warmup]);
 
   return (
-    <CommandPaletteContext.Provider
-      value={{
-        open: () => {
-          warmup();
-          setIsOpen(true);
-        },
-        close: () => setIsOpen(false),
-        warmup,
-      }}>
+    <CommandPaletteContext.Provider value={contextValue}>
       {children}
       {isOpen ? <LazyCommandPalette open={isOpen} setOpen={setIsOpen} /> : null}
     </CommandPaletteContext.Provider>

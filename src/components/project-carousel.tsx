@@ -23,8 +23,8 @@ const FALLBACK_IMAGES: ProjectImage[] = [
   },
 ];
 
-export default function ProjectCarousel({ images = [] }: ProjectCarouselProps) {
-  const normalizedImages = images.length ? images : FALLBACK_IMAGES;
+export default function ProjectCarousel({ images }: ProjectCarouselProps) {
+  const normalizedImages = images?.length ? images : FALLBACK_IMAGES;
   const [index, setIndex] = useState(0);
   const total = normalizedImages.length;
 
@@ -35,7 +35,7 @@ export default function ProjectCarousel({ images = [] }: ProjectCarouselProps) {
 
   return (
     <div className='space-y-3'>
-      <div className='bg-accent relative h-64 w-full overflow-hidden rounded-lg md:h-72'>
+      <div className='relative h-64 w-full overflow-hidden rounded-lg bg-accent md:h-72'>
         {active.src ? (
           <Image
             src={active.src}
@@ -46,7 +46,7 @@ export default function ProjectCarousel({ images = [] }: ProjectCarouselProps) {
             priority
           />
         ) : (
-          <div className='text-muted-foreground flex h-full w-full items-center justify-center text-sm'>
+          <div className='flex h-full w-full items-center justify-center text-sm text-muted-foreground'>
             Placeholder
           </div>
         )}
@@ -77,7 +77,7 @@ export default function ProjectCarousel({ images = [] }: ProjectCarouselProps) {
         <div className='flex items-center justify-center gap-2'>
           {normalizedImages.map((image, imageIndex) => (
             <button
-              key={`${image.alt}-${imageIndex}`}
+              key={`${image.src}-${image.alt}`}
               type='button'
               onClick={() => setIndex(imageIndex)}
               className='flex h-11 w-11 items-center justify-center rounded-full'
