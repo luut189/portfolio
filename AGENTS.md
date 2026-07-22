@@ -41,4 +41,4 @@ PRs should include:
 
 ## Configuration Tips
 
-Spotify and contact features depend on environment variables. Keep secrets out of the repo and configure `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `RESEND_API_KEY`, and `RESEND_RECEIVER` locally before testing those flows. Spotify grants are encrypted and stored in a private Vercel Blob store; do not add refresh tokens to environment files.
+Spotify and contact features depend on environment variables. Keep secrets out of the repo and configure `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, `RESEND_API_KEY`, and `RESEND_RECEIVER` locally before testing those flows. Spotify grants are encrypted and stored in a private Vercel Blob store; do not add refresh tokens to environment files. Spotify OAuth routes are available only in local development and return `404` in production.

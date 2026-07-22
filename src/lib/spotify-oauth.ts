@@ -6,6 +6,7 @@ const SPOTIFY_PROFILE_URL = 'https://api.spotify.com/v1/me';
 
 export const SPOTIFY_OAUTH_STATE_COOKIE = 'spotify_oauth_state';
 export const SPOTIFY_OAUTH_SCOPES = ['user-read-recently-played', 'user-top-read'];
+export const SPOTIFY_LOCAL_REDIRECT_URI = 'http://127.0.0.1:3000/api/spotify/callback';
 
 interface SpotifyOAuthCredentials {
   clientId: string;

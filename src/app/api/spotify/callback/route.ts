@@ -1,4 +1,6 @@
+import { env } from '@/lib/env';
 import {
+  SPOTIFY_LOCAL_REDIRECT_URI,
   SPOTIFY_OAUTH_SCOPES,
   SPOTIFY_OAUTH_STATE_COOKIE,
   exchangeSpotifyAuthorizationCode,
@@ -25,6 +27,15 @@ function clearStateCookie(response: NextResponse) {
 }
 
 export async function GET(request: NextRequest) {
+  if (env.nodeEnv === 'production') {
+    return new NextResponse(null, {
+      status: 404,
+      headers: {
+        'Cache-Control': 'no-store',
+      },
+    });
+  }
+
   const stateFromCookie = request.cookies.get(SPOTIFY_OAUTH_STATE_COOKIE)?.value;
   const { searchParams } = request.nextUrl;
 
@@ -68,8 +79,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const redirectUri = new URL('/api/spotify/callback', request.nextUrl.origin).toString();
-    const tokenSet = await exchangeSpotifyAuthorizationCode(code, redirectUri);
+    const tokenSet = await exchangeSpotifyAuthorizationCode(code, SPOTIFY_LOCAL_REDIRECT_URI);
 
     if (!tokenSet.refreshToken) {
       return clearStateCookie(

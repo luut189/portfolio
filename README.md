@@ -19,12 +19,13 @@ the validated, server-only module at `src/lib/env.ts`.
 To connect Spotify:
 
 1. Create a private Blob store in the Vercel project and use its OIDC connection.
-2. Add `https://kyzel.dev/api/spotify/callback` to the Spotify app's redirect URIs.
-3. Deploy the application, then visit `https://kyzel.dev/api/spotify/login` and authorize the
-   account once.
-4. Repeat the authorization before Spotify's six-month refresh-token lifetime ends, or after the
-   widget reports that Spotify data is unavailable.
+2. Add `http://127.0.0.1:3000/api/spotify/callback` to the Spotify app's redirect URIs.
+3. Run `pnpm vercel:link` once to link the local repository to its Vercel project.
+4. Run `pnpm dev`. The Vercel CLI fetches the Development environment, including short-lived Blob
+   credentials, before starting Next.js on `127.0.0.1:3000`.
+5. Visit `http://127.0.0.1:3000/api/spotify/login` to authorize the account.
+6. Repeat the local authorization before Spotify's six-month refresh-token lifetime ends, or after
+   the widget reports that Spotify data is unavailable.
 
-For local authorization, add `http://127.0.0.1:3000/api/spotify/callback` in Spotify, run
-`vercel link`, then `vercel env pull` to obtain short-lived Blob credentials before starting the app
-on `127.0.0.1`.
+The OAuth login and callback routes return `404` in production. Production can read and refresh the
+encrypted grant in Blob, but authorization can only be initiated from a local development server.

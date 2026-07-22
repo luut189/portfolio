@@ -27,7 +27,7 @@ let tokenRefreshPromise: Promise<string> | null = null;
 
 export class SpotifyAuthorizationRequiredError extends Error {
   constructor() {
-    super('Spotify authorization is required. Visit /api/spotify/login to reconnect the account.');
+    super('Spotify authorization is required. Reconnect the account through local development.');
     this.name = 'SpotifyAuthorizationRequiredError';
   }
 }
